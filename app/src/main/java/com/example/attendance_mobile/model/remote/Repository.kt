@@ -1,6 +1,9 @@
 package com.example.attendance_mobile.model.remote
 
+import android.os.Handler
 import com.example.attendance_mobile.data.Response
+import com.example.attendance_mobile.data.ScheduleMhs
+import com.example.attendance_mobile.home.homemhs.HomeMhsContract
 import com.example.attendance_mobile.login.LoginContract
 import com.example.fingerprintauth.RetrofitClient
 import com.example.fingerprintauth.RetrofitInterface
@@ -12,11 +15,12 @@ class Repository {
     init {
         retrofitService = RetrofitClient.getInstance()?.create(RetrofitInterface::class.java)
     }
-    fun doValidateDosen(kddsn : String, pass : String, listener : LoginContract.InteractorContract){
+    fun doValidateDosen(kddsn : String, pass : String, imei : String, listener : LoginContract.InteractorContract){
         val body : HashMap<String,String> = HashMap()
         body.run {
             put("kddsn",kddsn)
             put("password",pass)
+            put("imei",imei)
         }
         val call : Call<Response> = retrofitService!!.checkDsn(body)
         call.enqueue(object: Callback<Response> {
@@ -32,11 +36,12 @@ class Repository {
 
     }
 
-    fun doValidateMhs(nim : String, pass : String, listener: LoginContract.InteractorContract){
+    fun doValidateMhs(nim : String, pass : String, imei : String, listener: LoginContract.InteractorContract){
         val body : HashMap<String,String> = HashMap()
         body.run {
             put("nim",nim)
             put("password",pass)
+            put("imei",imei)
         }
         val call : Call<Response> = retrofitService!!.checkMhs(body)
         call.enqueue(object: Callback<Response> {
@@ -85,9 +90,93 @@ class Repository {
             }
 
             override fun onResponse(call: Call<Response>, response: retrofit2.Response<Response>) {
-                listener.onRegisterDsnResult(response.body())
+                listener.onRegisterDsnResult()
             }
 
         })
+    }
+
+    fun doFetchSummary(nim: String, listener : HomeMhsContract.InteractorContract){
+        val body : HashMap<String,Int> = HashMap()
+        Handler().postDelayed({
+            body.run{
+                put("sakit",2)
+                put("izin",4)
+                put("alpa",0)
+            }
+            listener.onSummaryResult(body)
+        },3000)
+//        val call : Call<HashMap<String, Int>> = retrofitService!!.fetchPresenceSummary(body)
+//        call.enqueue(object: Callback<HashMap<String,Int>> {
+//            override fun onFailure(call: Call<HashMap<String,Int>>, t: Throwable) {
+//                listener.onFail(t.message)
+//            }
+//
+//            override fun onResponse(call: Call<HashMap<String,Int>>, response: retrofit2.Response<HashMap<String,Int>>) {
+//
+//            }
+//
+//        })
+    }
+
+    fun doFetchScheduleList(kelas: String, listener : HomeMhsContract.InteractorContract){
+//        val body : HashMap<String,String> = HashMap()
+        val list : ArrayList<ScheduleMhs> = ArrayList()
+        Handler().postDelayed({
+            list.add(ScheduleMhs(
+                "Pengantar Akuntansi",
+                1,
+                "Arry Irawan",
+                "07:00",
+                "08:40",
+                "D216",
+                "NONE"
+            ))
+            list.add(ScheduleMhs(
+                "Dasar-Dasar Pemograman",
+                1,
+                "Santi Sundari, Rahil Jumiyani",
+                "08:40",
+                "10:40",
+                "D212",
+                "NONE"
+            ))
+            list.add(ScheduleMhs(
+                "Pengolahan Citra Digital",
+                0,
+                "Arry Irawan",
+                "11:00",
+                "12:10",
+                "D216",
+                "NONE"
+            ))
+            list.add(ScheduleMhs(
+                "Pengantar Akuntansi",
+                1,
+                "Yudhi Widhisana",
+                "14:43",
+                "15:00",
+                "D216",
+                "NONE"
+            ))
+//            body.run{
+//                put("sakit",2)
+//                put("izin",4)
+//                put("alpa",0)
+//            }
+
+            listener.onScheduleListResult(list)
+        },3000)
+//        val call : Call<HashMap<String, Int>> = retrofitService!!.fetchPresenceSummary(body)
+//        call.enqueue(object: Callback<HashMap<String,Int>> {
+//            override fun onFailure(call: Call<HashMap<String,Int>>, t: Throwable) {
+//                listener.onFail(t.message)
+//            }
+//
+//            override fun onResponse(call: Call<HashMap<String,Int>>, response: retrofit2.Response<HashMap<String,Int>>) {
+//
+//            }
+//
+//        })
     }
 }

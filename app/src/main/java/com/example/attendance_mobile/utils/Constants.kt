@@ -7,7 +7,10 @@ class Constants{
         const val STILL_ACTIVE_MESSAGE = "Anda tercatat sedang menggunakan device lain. Silahkan hubungi tata usaha untuk melakukan reset"
         const val STILL_ACTIVE_STATUS = "User is active"
         const val NOT_VERIFIED_MESSAGE = "Anda tidak dikenali atau data yang dimasukkan salah"
+        const val TEORI = "Teori"
+        const val PRAKTEK = "Praktek"
         const val NOT_YET_ACTIVE_STATUS = "User is not active"
+        const val IMEI_MATCH = "Imai match"
         const val DOSEN = 2
         const val MAHASISWA = 1
         const val PERMISSION_DENIED = "Terdapat masalah dalam perizinan aplikasi dari sistem"

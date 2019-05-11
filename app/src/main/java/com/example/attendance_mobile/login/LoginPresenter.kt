@@ -19,39 +19,66 @@ class LoginPresenter(private val view: LoginContract.ViewContract,
         view.showSnackBar("Error ocurred, $error")
     }
 
+    fun onEnterApp(){
+        val status = sharedPreferenceHelper.getSharedPreferenceInt("status",-1)
+        if(status != -1){
+            if(status == Constants.MAHASISWA){
+                view.startHomeMhs()
+            }else{
+                view.startHomeDsn()
+            }
+        }else{
+            view.onFirstTimeUse()
+        }
+    }
+
     override fun onValidateMhsResult(response: Response?) {
         val imei : String
         val pubKey: String
-        if(response?.message == Constants.NOT_YET_ACTIVE_STATUS){
-            if(permissionManager.isPermissionGranted("android.permission.READ_PHONE_STATE")){
-                imei = permissionManager.getImei()
-                pubKey = keyMgr.generateKeyPair()
-                repository.doRegisterMhs(pubKey,nimTemp,imei,this)
-            }else{
-                view.showSnackBar(Constants.PERMISSION_DENIED)
+        when(response?.message){
+            Constants.NOT_YET_ACTIVE_STATUS -> {
+                if(permissionManager.isPermissionGranted("android.permission.READ_PHONE_STATE")){
+                    imei = permissionManager.getImei()
+                    pubKey = keyMgr.generateKeyPair()
+                    repository.doRegisterMhs(pubKey,nimTemp,imei,this)
+                }else{
+                    view.showSnackBar(Constants.PERMISSION_DENIED)
+                }
             }
-        }else if(response?.message == Constants.STILL_ACTIVE_STATUS){
-            view.showDialog(Constants.STILL_ACTIVE_MESSAGE)
-        }else {
-            view.showSnackBar(Constants.NOT_VERIFIED_MESSAGE)
+            Constants.IMEI_MATCH -> {
+                view.startHomeMhs()
+            }
+            Constants.STILL_ACTIVE_STATUS->{
+                view.showDialog(Constants.STILL_ACTIVE_MESSAGE)
+            }
+            else -> {
+                view.showSnackBar(Constants.NOT_VERIFIED_MESSAGE)
+            }
         }
     }
 
     override fun onValidateDsnResult(response: Response?) {
         val imei : String
         val pubKey: String
-        if(response?.message == Constants.NOT_YET_ACTIVE_STATUS){
-            if(permissionManager.isPermissionGranted("android.permission.READ_PHONE_STATE")){
-                imei = permissionManager.getImei()
-                pubKey = keyMgr.generateKeyPair()
-                repository.doRegisterDsn(pubKey,kddsnTemp,imei,this)
-            }else{
-                view.showSnackBar(Constants.PERMISSION_DENIED)
+        when(response?.message){
+            Constants.NOT_YET_ACTIVE_STATUS -> {
+                if(permissionManager.isPermissionGranted("android.permission.READ_PHONE_STATE")){
+                    imei = permissionManager.getImei()
+                    pubKey = keyMgr.generateKeyPair()
+                    repository.doRegisterDsn(pubKey,kddsnTemp,imei,this)
+                }else{
+                    view.showSnackBar(Constants.PERMISSION_DENIED)
+                }
             }
-        }else if(response?.message == Constants.STILL_ACTIVE_STATUS){
-            view.showDialog(Constants.STILL_ACTIVE_MESSAGE)
-        }else {
-            view.showSnackBar(Constants.NOT_VERIFIED_MESSAGE)
+            Constants.IMEI_MATCH -> {
+                view.startHomeDsn()
+            }
+            Constants.STILL_ACTIVE_STATUS->{
+                view.showDialog(Constants.STILL_ACTIVE_MESSAGE)
+            }
+            else -> {
+                view.showSnackBar(Constants.NOT_VERIFIED_MESSAGE)
+            }
         }
     }
 
@@ -59,17 +86,17 @@ class LoginPresenter(private val view: LoginContract.ViewContract,
         sharedPreferenceHelper.apply {
             setSharedPreferenceString("nim",nimTemp)
             setSharedPreferenceInt("status",Constants.MAHASISWA)
-//            setSharedPreferenceString("kelas",nimTemp)
+            setSharedPreferenceString("kelas",response!!.message)
         }
-        view.onRegisterMhsSuccess()
+        view.startHomeMhs()
     }
 
-    override fun onRegisterDsnResult(response: Response?) {
+    override fun onRegisterDsnResult() {
         sharedPreferenceHelper.apply {
             setSharedPreferenceString("kddsn",kddsnTemp)
             setSharedPreferenceInt("status",Constants.DOSEN)
         }
-        view.onRegisterDsnSuccess()
+        view.startHomeDsn()
     }
 
 
@@ -77,17 +104,18 @@ class LoginPresenter(private val view: LoginContract.ViewContract,
         if(currentTab == 1) {
             if (nim != "" && pass != "") {
                 nimTemp = nim
-                repository.doValidateMhs(nim,pass,this)
+                repository.doValidateMhs(nim,pass,permissionManager.getImei(),this)
             } else {
                 view.showSnackBar(Constants.MHS_INVALID_FORM)
             }
         }else {
             if(kddosen != "" && pass != ""){
                 kddsnTemp = kddosen
-                repository.doValidateDosen(kddosen,pass,this)
+                repository.doValidateDosen(kddosen,pass,permissionManager.getImei(),this)
             }else{
                 view.showSnackBar(Constants.DOSEN_INVALID_FORM)
             }
         }
     }
+
 }

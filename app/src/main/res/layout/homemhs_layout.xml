@@ -1,13 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:gravity="center"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
-
-    <TextView
-            android:layout_width="wrap_content"
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/homemhs_parent"
+        android:orientation="vertical"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Homescreen Mahasiswa"
-            android:layout_gravity="center"/>
+            android:layout_marginTop="24dp">
+        <TextView
+                android:textSize="28sp"
+                android:textColor="#000"
+                android:fontFamily="@font/productsansbold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Home"/>
+
+        <ImageView
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/user"
+        />
+    </RelativeLayout>
+    <RelativeLayout android:id="@+id/attendance_summary_parent" android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+        <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/attendance_summary_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+        >
+            <include android:id="@+id/attendance_summary_placeholder" layout="@layout/attendance_summary_placeholder"/>
+        </com.facebook.shimmer.ShimmerFrameLayout>
+        <LinearLayout
+                android:id="@+id/summary_view"
+                android:visibility="gone"
+                android:orientation="horizontal"
+                android:layout_marginTop="18dp"
+                android:background="@drawable/rounded_rect"
+                android:layout_width="match_parent"
+                android:layout_height="125dp">
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content">
+                <TextView
+                        android:id="@+id/izin_num"
+                        android:textSize="55sp"
+                        android:layout_gravity="center"
+                        android:textColor="@color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/productsansmedium"
+                        android:text="0"/>
+                <TextView
+                        android:textSize="20sp"
+                        android:layout_gravity="center"
+                        android:textColor="@color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/productsansbold"
+                        android:text="Izin"/>
+            </LinearLayout>
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content">
+                <TextView
+                        android:id="@+id/sakit_num"
+                        android:textSize="55sp"
+                        android:layout_gravity="center"
+                        android:textColor="@color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/productsansmedium"
+                        android:text="0"/>
+                <TextView
+                        android:textSize="20sp"
+                        android:layout_gravity="center"
+                        android:textColor="@color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/productsansbold"
+                        android:text="Sakit"/>
+            </LinearLayout>
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content">
+                <TextView
+                        android:id="@+id/alpa_num"
+                        android:textSize="55sp"
+                        android:layout_gravity="center"
+                        android:textColor="@color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/productsansmedium"
+                        android:text="0"/>
+                <TextView
+                        android:textSize="20sp"
+                        android:layout_gravity="center"
+                        android:textColor="@color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/productsansbold"
+                        android:text="Alpa"/>
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/schedule_list_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+    >
+        <LinearLayout
+                android:id="@+id/schedule_list_ph_container"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <include layout="@layout/schedule_list_placeholder"/>
+            <include layout="@layout/schedule_list_placeholder"/>
+            <include layout="@layout/schedule_list_placeholder"/>
+            <include layout="@layout/schedule_list_placeholder"/>
+        </LinearLayout>
+    </com.facebook.shimmer.ShimmerFrameLayout>
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/schedule_list"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+    />
 </LinearLayout>

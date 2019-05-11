@@ -19,17 +19,47 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 
 class LoginActivity : AppCompatActivity(), LoginContract.ViewContract {
-    override var presenter: LoginPresenter? = null
+    override lateinit var presenter: LoginPresenter
     private var currentTab : Int = 1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        requestPermissions(arrayOf(Manifest.permission.READ_PHONE_STATE),0)
         presenter = LoginPresenter(this, Repository(),
             KeyManager(),
             SharedPreferenceHelper(this),
             PermissionManager(this)
         )
+        presenter.onEnterApp()
+    }
+
+    override fun startHomeMhs() {
+        startActivity(Intent(this,HomeMhsActivity::class.java))
+        finish()
+    }
+
+    override fun startHomeDsn() {
+        startActivity(Intent(this, HomeDsnActivity::class.java))
+        finish()
+    }
+
+    override fun showSnackBar(message: String) {
+        Snackbar.make(parent_login,message,Snackbar.LENGTH_LONG).show()
+    }
+
+    override fun showDialog(message: String) {
+        MaterialAlertDialogBuilder(this,R.style.DialogTheme)
+            .setTitle("Login failed")
+            .setMessage(message)
+            .setPositiveButton("Ok", null)
+            .show()
+    }
+
+    private fun handleSubTitle(){
+        if(currentTab == 1) subtitle.text = Constants.MAHASISWA_SUBTITLE else subtitle.text = Constants.DOSEN_SUBTITLE
+    }
+
+    override fun onFirstTimeUse() {
+        requestPermissions(arrayOf(Manifest.permission.READ_PHONE_STATE),0)
         mhs_tab.isChecked = true
         mhs_tab.setOnClickListener {
             currentTab = 1
@@ -59,44 +89,8 @@ class LoginActivity : AppCompatActivity(), LoginContract.ViewContract {
             val passText : String = pass_field.editText?.text.toString()
             val nimText : String  = nim_field.editText?.text.toString()
             val kddsnText : String  = kddsn_field.editText?.text.toString()
-            presenter!!.handleLogin(currentTab,kddsnText,nimText,passText)
+            presenter.handleLogin(currentTab,kddsnText,nimText,passText)
         }
-
     }
-
-    override fun onRegisterMhsSuccess() {
-        startActivity(Intent(this,HomeMhsActivity::class.java))
-        finish()
-    }
-
-    override fun onRegisterDsnSuccess() {
-        startActivity(Intent(this, HomeDsnActivity::class.java))
-        finish()
-    }
-
-    override fun showSnackBar(message: String) {
-        Snackbar.make(parent_login,message,Snackbar.LENGTH_LONG).show()
-    }
-
-    override fun showDialog(message: String) {
-        MaterialAlertDialogBuilder(this,R.style.DialogTheme)
-            .setTitle("Login failed")
-            .setMessage(message)
-            .setPositiveButton("Ok", null)
-            .show()
-    }
-
-    private fun handleSubTitle(){
-        if(currentTab == 1) subtitle.text = Constants.MAHASISWA_SUBTITLE else subtitle.text = Constants.DOSEN_SUBTITLE
-    }
-
-//    override fun isPermissionGranted(): Boolean {
-//        return checkSelfPermission("android.permission.READ_PHONE_STATE") == PackageManager.PERMISSION_GRANTED
-//    }
-
-//    override fun getImei() : String{
-//        val telephonyManager = this.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-//        return telephonyManager.imei
-//    }
 
 }
