@@ -1,12 +1,12 @@
 package com.example.attendance_mobile.home.homemhs
 
+import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.attendance_mobile.R
-import com.example.attendance_mobile.data.ScheduleMhs
+import com.example.attendance_mobile.beaconscanning.BeaconScanActivity
 import com.example.attendance_mobile.model.local.SharedPreferenceHelper
 import com.example.attendance_mobile.model.manager.PermissionManager
 import com.example.attendance_mobile.model.remote.Repository
@@ -15,7 +15,6 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.homemhs_layout.*
 
 class HomeMhsActivity : AppCompatActivity(),HomeMhsContract.ViewContract{
-    private val list : ArrayList<ScheduleMhs> = ArrayList()
     private lateinit var adapter : ScheduleAdapter
     override lateinit var presenter: HomeMhsPresenter
 
@@ -32,9 +31,7 @@ class HomeMhsActivity : AppCompatActivity(),HomeMhsContract.ViewContract{
         attendance_summary_container.startShimmer()
         schedule_list_container.startShimmer()
         schedule_list.layoutManager = LinearLayoutManager(this)
-        adapter = ScheduleAdapter(list){scheduleMhs : ScheduleMhs ->
-            presenter.onScheduleClick(scheduleMhs)
-        }
+        adapter = ScheduleAdapter(presenter)
         schedule_list.adapter = adapter
 //        Handler().postDelayed({
 //            attendance_summary_container.stopShimmer()
@@ -43,8 +40,11 @@ class HomeMhsActivity : AppCompatActivity(),HomeMhsContract.ViewContract{
 //        },3000)
     }
 
-    override fun startBeaconActivity() {
-        Snackbar.make(homemhs_parent,"NOT IMPLEMENTED YET", Snackbar.LENGTH_LONG).show()
+    override fun startBeaconActivity(kodeRuangan : String, macAddress: String) {
+        val intent = Intent(this,BeaconScanActivity::class.java)
+        intent.putExtra("kodeRuangan",kodeRuangan)
+        intent.putExtra("macAddress",macAddress)
+        startActivity(intent)
     }
 
     override fun onSummaryDataLoaded(data : HashMap<String,Int>) {
@@ -56,8 +56,7 @@ class HomeMhsActivity : AppCompatActivity(),HomeMhsContract.ViewContract{
         summary_view.visibility = View.VISIBLE
     }
 
-    override fun onScheduleListLoaded(data : ArrayList<ScheduleMhs>) {
-        adapter.setList(data)
+    override fun onScheduleListLoaded() {
         schedule_list_container.stopShimmer()
         schedule_list_ph_container.visibility = View.GONE
         schedule_list.visibility = View.VISIBLE
@@ -67,11 +66,15 @@ class HomeMhsActivity : AppCompatActivity(),HomeMhsContract.ViewContract{
         Snackbar.make(homemhs_parent,message, Snackbar.LENGTH_LONG).show()
     }
 
-    override fun showDialog(message: String) {
+    override fun showDialog(title : String, message: String) {
         MaterialAlertDialogBuilder(this,R.style.DialogTheme)
-            .setTitle("Pencatatan Presensi Gagal")
+            .setTitle(title)
             .setMessage(message)
             .setPositiveButton("Ok", null)
             .show()
+    }
+
+    override fun refreshList() {
+        adapter.notifyDataSetChanged()
     }
 }

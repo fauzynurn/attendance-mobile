@@ -5,16 +5,28 @@ import com.example.attendance_mobile.data.ScheduleMhs
 
 interface HomeMhsContract {
     interface ViewContract : BaseView<HomeMhsPresenter> {
-        fun startBeaconActivity()
+        fun startBeaconActivity(kodeRuangan : String, macAddress : String)
         fun onSummaryDataLoaded(data : HashMap<String,Int>)
-        fun onScheduleListLoaded(data : ArrayList<ScheduleMhs>)
+        fun onScheduleListLoaded()
         fun showSnackBar(message: String)
-        fun showDialog(message: String)
+        fun showDialog(title: String, message: String)
+        fun refreshList()
     }
 
     interface InteractorContract{
-        fun onScheduleListResult(list : ArrayList<ScheduleMhs>)
+        fun onScheduleListResult(data : ArrayList<ScheduleMhs>)
         fun onSummaryResult(summaryData : HashMap<String,Int>)
         fun onFail(error : String?)
+    }
+
+    interface ItemViewContract{
+        fun setStartTime(startTime : String)
+        fun setEndTime(endTime : String)
+        fun setNamaMatkul(namaMatkul : String)
+        fun setJenisMatkul(jenisMatkul : String)
+        fun setStatusMatkul(statusMatkul : String)
+        fun setStatusMatkulColor(colorCode : String)
+        fun setPresenceButtonClickListener(item : ScheduleMhs, clickListener: (ScheduleMhs) -> Unit)
+        fun hidePresenceButton()
     }
 }

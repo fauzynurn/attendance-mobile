@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <LinearLayout android:orientation="vertical"
+                  android:layout_centerInParent="true"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content">
+        <ImageView
+                android:layout_gravity="center"
+                android:src="@drawable/signal"
+                android:layout_width="100dp"
+                android:layout_height="100dp"/>
+        <TextView
+                android:layout_marginTop="25dp"
+                android:id="@+id/info_text_1"
+                android:textSize="20sp"
+                android:fontFamily="@font/productsansmedium"
+                android:text="Silahkan masuk ke ruangan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        <TextView
+                android:textSize="30sp"
+                android:id="@+id/ruangan"
+                android:layout_gravity="center"
+                android:fontFamily="@font/productsansbold"
+                android:text="ruangan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        <TextView
+                android:textSize="20sp"
+                android:id="@+id/info_text_2"
+                android:layout_gravity="center"
+                android:fontFamily="@font/productsansmedium"
+                android:text="untuk melanjutkan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <TextView
+            android:textColor="#7c7c7c"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginBottom="35dp"
+            android:layout_alignParentBottom="true"
+            android:textAlignment="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="bottom"
+            android:fontFamily="@font/productsanslight"
+            android:text="Aplikasi akan berpindah halaman secara otomatis ketika sinyal beacon terdeteksi"
+    />
+</RelativeLayout>

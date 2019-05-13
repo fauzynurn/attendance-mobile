@@ -127,8 +127,8 @@ class Repository {
                 "Pengantar Akuntansi",
                 1,
                 "Arry Irawan",
-                "07:00",
                 "08:40",
+                "09:00",
                 "D216",
                 "NONE"
             ))
@@ -136,8 +136,8 @@ class Repository {
                 "Dasar-Dasar Pemograman",
                 1,
                 "Santi Sundari, Rahil Jumiyani",
-                "08:40",
-                "10:40",
+                "09:00",
+                "20:00",
                 "D212",
                 "NONE"
             ))
@@ -145,8 +145,8 @@ class Repository {
                 "Pengolahan Citra Digital",
                 0,
                 "Arry Irawan",
-                "11:00",
-                "12:10",
+                "11:51",
+                "12:00",
                 "D216",
                 "NONE"
             ))
@@ -154,10 +154,10 @@ class Repository {
                 "Pengantar Akuntansi",
                 1,
                 "Yudhi Widhisana",
-                "14:43",
-                "15:00",
+                "13:44",
+                "21:30",
                 "D216",
-                "NONE"
+                "C2:00:E2:00:00:6A"
             ))
 //            body.run{
 //                put("sakit",2)

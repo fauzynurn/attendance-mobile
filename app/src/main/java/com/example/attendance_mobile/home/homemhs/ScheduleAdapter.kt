@@ -7,18 +7,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.attendance_mobile.R
 import com.example.attendance_mobile.data.ScheduleMhs
-import com.example.attendance_mobile.utils.Constants
-import com.example.attendance_mobile.utils.TimeUtils
 import kotlinx.android.synthetic.main.schedule_mhs_item.view.*
-import java.util.*
-import kotlin.collections.ArrayList
 
-class ScheduleAdapter(private var scheduleList: ArrayList<ScheduleMhs>, private val clickListener: (ScheduleMhs) -> Unit) : RecyclerView.Adapter<ScheduleAdapter.ScheduleViewHolder>() {
-
-    fun setList(scheduleList: ArrayList<ScheduleMhs>){
-        this.scheduleList = scheduleList
-        this.notifyDataSetChanged()
-    }
+class ScheduleAdapter(private val presenter: HomeMhsPresenter) : RecyclerView.Adapter<ScheduleAdapter.ScheduleViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ScheduleViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.schedule_mhs_item, parent, false)
@@ -26,42 +17,79 @@ class ScheduleAdapter(private var scheduleList: ArrayList<ScheduleMhs>, private 
     }
 
     override fun getItemCount(): Int {
-        return scheduleList.size
+        return presenter.size()
     }
 
     override fun onBindViewHolder(holder: ScheduleViewHolder, position: Int) {
-        val item = scheduleList[position]
-        holder.bind(item,clickListener)
+        presenter.onBindScheduleItem(position,holder)
     }
 
-    class ScheduleViewHolder(private val v : View) : RecyclerView.ViewHolder(v){
-        fun bind(item : ScheduleMhs,clickListener: (ScheduleMhs) -> Unit){
-            val currentTime : Date = Calendar.getInstance().time
-            val startTime : Date = TimeUtils.convertStringToDate(item.jamMulai)
+    class ScheduleViewHolder(private val v: View) : RecyclerView.ViewHolder(v), HomeMhsContract.ItemViewContract {
 
-            val x = TimeUtils.addMinutesToDate(5,startTime)
-            val res = currentTime < x
-            v.apply {
-                start_time.text = item.jamMulai
-                end_time.text = item.jamSelesai
-                matkul.text = item.namaMatkul
-                if(item.jenisMatkul == 1) jenis_matkul.text = Constants.TEORI else jenis_matkul.text = Constants.PRAKTEK
-                when{
-                    currentTime >= startTime && currentTime < TimeUtils.addMinutesToDate(5,startTime) ->  {
-                        status_matkul.text = "Sedang berjalan"
-                        status_matkul.setTextColor(Color.parseColor("#efdd3e"))
-                    }
-                    currentTime > TimeUtils.addMinutesToDate(5,startTime) -> {
-                        status_matkul.text = "Tidak hadir"
-                        status_matkul.setTextColor(Color.parseColor("#ef463e"))
-                    }
-                    currentTime < startTime -> {
-                        status_matkul.text = "Belum dimulai"
-                        status_matkul.setTextColor(Color.parseColor("#bcbcbc"))
-                    }
-                }
-                presence_button.setOnClickListener{clickListener(item)}
-            }
+//        fun bind(item: ScheduleMhs, clickListener: (ScheduleMhs) -> Unit) {
+//            val currentTime: Date = Calendar.getInstance().time
+//            val startTime: Date = TimeUtils.convertStringToDate(item.jamMulai)
+//
+////            val x = TimeUtils.addMinutesToDate(5,startTime)
+////            val res = currentTime < x
+//            v.apply {
+//                start_time.text = item.jamMulai
+//                end_time.text = item.jamSelesai
+//                matkul.text = item.namaMatkul
+//                if (item.jenisMatkul == 1) jenis_matkul.text = Constants.TEORI else jenis_matkul.text =
+//                    Constants.PRAKTEK
+//                when {
+//                    currentTime >= startTime && currentTime < TimeUtils.addMinutesToDate(
+//                        Constants.LATE_LIMIT,
+//                        startTime
+//                    ) -> {
+//                        status_matkul.text = "Sedang berjalan"
+//                        status_matkul.setTextColor(Color.parseColor("#efdd3e"))
+//                        presence_button.setOnClickListener { clickListener(item) }
+//                    }
+//                    currentTime > TimeUtils.addMinutesToDate(Constants.LATE_LIMIT, startTime) -> {
+//                        status_matkul.text = "Tidak hadir"
+//                        status_matkul.setTextColor(Color.parseColor("#ef463e"))
+//                        presence_button.visibility = View.GONE
+//                    }
+//                    currentTime < startTime -> {
+//                        status_matkul.text = "Belum dimulai"
+//                        status_matkul.setTextColor(Color.parseColor("#bcbcbc"))
+//                        presence_button.visibility = View.GONE
+//                    }
+//                }
+//            }
+
+        override fun setStartTime(startTime: String) {
+            v.start_time.text = startTime
+        }
+
+        override fun setEndTime(endTime: String) {
+            v.end_time.text = endTime
+        }
+
+        override fun setNamaMatkul(namaMatkul: String) {
+            v.matkul.text = namaMatkul
+        }
+
+        override fun setJenisMatkul(jenisMatkul: String) {
+            v.jenis_matkul.text = jenisMatkul
+        }
+
+        override fun setStatusMatkul(statusMatkul: String) {
+            v.status_matkul.text = statusMatkul
+        }
+
+        override fun setStatusMatkulColor(colorCode: String) {
+            v.status_matkul.setTextColor(Color.parseColor(colorCode))
+        }
+
+        override fun setPresenceButtonClickListener(item : ScheduleMhs, clickListener: (ScheduleMhs) -> Unit) {
+            v.presence_button.setOnClickListener { clickListener(item) }
+        }
+
+        override fun hidePresenceButton() {
+            v.presence_button.visibility = View.GONE
         }
     }
 }

@@ -19,6 +19,15 @@
         </activity>
         <activity android:name=".home.homemhs.HomeMhsActivity"/>
         <activity android:name=".home.homedosen.HomeDsnActivity"/>
+        <activity android:name=".beaconscanning.BeaconScanActivity"/>
+        <activity android:name=".fingerprintauth.FingerprintAuthActivity"/>
+        <service android:name=".model.manager.BeaconService" android:enabled="true"/>
+        <receiver android:name=".model.manager.BeaconService$BeaconReceiver"
+                  android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
