@@ -1,7 +1,13 @@
 package com.example.attendance_mobile.model.manager
 
+import android.app.AlarmManager
+import android.app.NotificationManager
+import android.bluetooth.BluetoothAdapter
 import android.content.Context
+import android.content.Context.FINGERPRINT_SERVICE
+import android.content.Context.NOTIFICATION_SERVICE
 import android.content.pm.PackageManager
+import android.hardware.fingerprint.FingerprintManager
 import android.telephony.TelephonyManager
 
 class PermissionManager(private val context : Context) {
@@ -15,6 +21,17 @@ class PermissionManager(private val context : Context) {
         return telephonyManager.imei
     }
 
+    companion object {
+        fun switchBluetoothState() {
+            if (BluetoothAdapter.getDefaultAdapter().isEnabled) {
+                BluetoothAdapter.getDefaultAdapter().disable()
+            } else {
+                BluetoothAdapter.getDefaultAdapter().enable()
+            }
+        }
+    }
+
+
     fun isAutoTimeActive() : Boolean {
         val first = android.provider.Settings.Global.getInt(
             context.contentResolver,
@@ -26,17 +43,25 @@ class PermissionManager(private val context : Context) {
             android.provider.Settings.Global.AUTO_TIME,
             0
         )
-
         return first !=0 && second != 0
-//        return (android.provider.Settings.Global.getInt(
-//            context.contentResolver,
-//            android.provider.Settings.Global.AUTO_TIME_ZONE,
-//            0
-//        ) != 0
-//                && android.provider.Settings.Global.getInt(
-//            context.contentResolver,
-//            android.provider.Settings.Global.AUTO_TIME,
-//            0
-//        ) != 0)
+    }
+
+    fun getFingerprintSystemService() : FingerprintManager{
+        return context.getSystemService(FINGERPRINT_SERVICE) as FingerprintManager
+    }
+
+    fun getAlarmSystemService() : AlarmManager{
+        return context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+    }
+    fun checkIfHasFingerprintEnrolled() : Boolean{
+        return getFingerprintSystemService().hasEnrolledFingerprints()
+    }
+
+    fun checkIfFingerprintScanSupported() : Boolean{
+        return getFingerprintSystemService().isHardwareDetected
+    }
+
+    fun getNotificationSystemService() : NotificationManager{
+        return context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
     }
 }

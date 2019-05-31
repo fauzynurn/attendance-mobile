@@ -1,7 +1,6 @@
 package com.example.attendance_mobile.login
 
 import android.Manifest
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -12,8 +11,9 @@ import com.example.attendance_mobile.home.homemhs.HomeMhsActivity
 import com.example.attendance_mobile.model.local.SharedPreferenceHelper
 import com.example.attendance_mobile.model.manager.KeyManager
 import com.example.attendance_mobile.model.manager.PermissionManager
-import com.example.attendance_mobile.model.remote.Repository
+import com.example.attendance_mobile.model.remote.RemoteRepository
 import com.example.attendance_mobile.utils.Constants
+import com.example.attendance_mobile.utils.NotificationManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
@@ -24,7 +24,7 @@ class LoginActivity : AppCompatActivity(), LoginContract.ViewContract {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        presenter = LoginPresenter(this, Repository(),
+        presenter = LoginPresenter(this, RemoteRepository(),
             KeyManager(),
             SharedPreferenceHelper(this),
             PermissionManager(this)
@@ -46,12 +46,14 @@ class LoginActivity : AppCompatActivity(), LoginContract.ViewContract {
         Snackbar.make(parent_login,message,Snackbar.LENGTH_LONG).show()
     }
 
-    override fun showDialog(message: String) {
-        MaterialAlertDialogBuilder(this,R.style.DialogTheme)
-            .setTitle("Login failed")
-            .setMessage(message)
-            .setPositiveButton("Ok", null)
-            .show()
+    override fun showDialog(title : String, message: String, isWithExitListener : Boolean) {
+        MaterialAlertDialogBuilder(this,R.style.DialogTheme).run {
+            setTitle(title)
+            setMessage(message)
+            if(isWithExitListener) setPositiveButton("Ok") { _,_ -> finishAffinity()
+            } else setPositiveButton("Ok",null)
+            show()
+        }
     }
 
     private fun handleSubTitle(){
@@ -60,6 +62,7 @@ class LoginActivity : AppCompatActivity(), LoginContract.ViewContract {
 
     override fun onFirstTimeUse() {
         requestPermissions(arrayOf(Manifest.permission.READ_PHONE_STATE),0)
+        NotificationManager.createNotificationChannel(this,PermissionManager(this).getNotificationSystemService())
         mhs_tab.isChecked = true
         mhs_tab.setOnClickListener {
             currentTab = 1

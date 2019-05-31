@@ -36,86 +36,107 @@
         >
             <include android:id="@+id/attendance_summary_placeholder" layout="@layout/attendance_summary_placeholder"/>
         </com.facebook.shimmer.ShimmerFrameLayout>
-        <LinearLayout
-                android:id="@+id/summary_view"
+        <RelativeLayout
                 android:visibility="gone"
+                android:id="@+id/summary_view"
                 android:orientation="horizontal"
                 android:layout_marginTop="18dp"
                 android:background="@drawable/rounded_rect"
                 android:layout_width="match_parent"
-                android:layout_height="125dp">
+                android:layout_height="155dp">
             <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
+                    android:id="@+id/kehadiran_detail_matkul_ref"
+                    android:layout_alignParentEnd="true"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
                 <TextView
-                        android:id="@+id/izin_num"
-                        android:textSize="55sp"
                         android:layout_gravity="center"
                         android:textColor="@color/white"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
                         android:fontFamily="@font/productsansmedium"
-                        android:text="0"/>
-                <TextView
-                        android:textSize="20sp"
-                        android:layout_gravity="center"
-                        android:textColor="@color/white"
+                        android:text="Lihat detail"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/productsansbold"
-                        android:text="Izin"/>
+                        android:layout_height="wrap_content"/>
+                <ImageView android:src="@drawable/ic_keyboard_arrow_right_white_24dp"
+                           android:layout_width="wrap_content" android:layout_height="wrap_content"/>
             </LinearLayout>
             <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
+                    android:layout_below="@id/kehadiran_detail_matkul_ref"
+                    android:layout_marginTop="2dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                <TextView
-                        android:id="@+id/sakit_num"
-                        android:textSize="55sp"
-                        android:layout_gravity="center"
-                        android:textColor="@color/white"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/productsansmedium"
-                        android:text="0"/>
-                <TextView
-                        android:textSize="20sp"
-                        android:layout_gravity="center"
-                        android:textColor="@color/white"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/productsansbold"
-                        android:text="Sakit"/>
+                <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content">
+                    <TextView
+                            android:id="@+id/izin_num"
+                            android:textSize="55sp"
+                            android:layout_gravity="center"
+                            android:textColor="@color/white"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/productsansmedium"
+                            android:text="0"/>
+                    <TextView
+                            android:textSize="20sp"
+                            android:layout_gravity="center"
+                            android:textColor="@color/white"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/productsansbold"
+                            android:text="Izin"/>
+                </LinearLayout>
+                <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content">
+                    <TextView
+                            android:id="@+id/sakit_num"
+                            android:textSize="55sp"
+                            android:layout_gravity="center"
+                            android:textColor="@color/white"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/productsansmedium"
+                            android:text="0"/>
+                    <TextView
+                            android:textSize="20sp"
+                            android:layout_gravity="center"
+                            android:textColor="@color/white"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/productsansbold"
+                            android:text="Sakit"/>
+                </LinearLayout>
+                <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content">
+                    <TextView
+                            android:id="@+id/alpa_num"
+                            android:textSize="55sp"
+                            android:layout_gravity="center"
+                            android:textColor="@color/white"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/productsansmedium"
+                            android:text="0"/>
+                    <TextView
+                            android:textSize="20sp"
+                            android:layout_gravity="center"
+                            android:textColor="@color/white"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/productsansbold"
+                            android:text="Alpa"/>
+                </LinearLayout>
             </LinearLayout>
-            <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content">
-                <TextView
-                        android:id="@+id/alpa_num"
-                        android:textSize="55sp"
-                        android:layout_gravity="center"
-                        android:textColor="@color/white"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/productsansmedium"
-                        android:text="0"/>
-                <TextView
-                        android:textSize="20sp"
-                        android:layout_gravity="center"
-                        android:textColor="@color/white"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/productsansbold"
-                        android:text="Alpa"/>
-            </LinearLayout>
-        </LinearLayout>
+        </RelativeLayout>
     </RelativeLayout>
-
+<RelativeLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
     <com.facebook.shimmer.ShimmerFrameLayout
             android:id="@+id/schedule_list_container"
             android:layout_width="match_parent"
@@ -142,4 +163,10 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
     />
+    <LinearLayout android:visibility="gone" android:id="@+id/no_schedule_found_warning" android:layout_centerInParent="true" android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content">
+        <ImageView android:layout_width="90dp" android:layout_gravity="center"
+                   android:layout_height="90dp" android:src="@drawable/calendar"/>
+        <TextView android:layout_marginTop="15dp" android:textSize="20sp" android:fontFamily="@font/productsansmedium" android:layout_gravity="center" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Tidak ada jadwal untuk hari ini"/>
+    </LinearLayout>
+</RelativeLayout>
 </LinearLayout>

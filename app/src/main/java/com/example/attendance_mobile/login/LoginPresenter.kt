@@ -4,11 +4,11 @@ import com.example.attendance_mobile.data.Response
 import com.example.attendance_mobile.model.local.SharedPreferenceHelper
 import com.example.attendance_mobile.model.manager.KeyManager
 import com.example.attendance_mobile.model.manager.PermissionManager
-import com.example.attendance_mobile.model.remote.Repository
+import com.example.attendance_mobile.model.remote.RemoteRepository
 import com.example.attendance_mobile.utils.Constants
 
 class LoginPresenter(private val view: LoginContract.ViewContract,
-                     private val repository : Repository,
+                     private val remoteRepository : RemoteRepository,
                      private val keyMgr : KeyManager,
                      private val sharedPreferenceHelper: SharedPreferenceHelper,
                      private val permissionManager: PermissionManager) : LoginContract.InteractorContract{
@@ -21,6 +21,11 @@ class LoginPresenter(private val view: LoginContract.ViewContract,
 
     fun onEnterApp(){
         val status = sharedPreferenceHelper.getSharedPreferenceInt("status",-1)
+        if(!permissionManager.checkIfFingerprintScanSupported()){
+            view.showDialog(Constants.FINGERPRINT_NOT_SUPPORTED_TITLE,Constants.FINGERPRINT_NOT_SUPPORTED_MESSAGE,true)
+        }else if(!permissionManager.checkIfHasFingerprintEnrolled()){
+            view.showDialog(Constants.FINGERPRINT_DATA_NOT_FOUND_TITLE,Constants.FINGERPRINT_DATA_NOT_FOUND_MESSAGE,true)
+        }
         if(status != -1){
             if(status == Constants.MAHASISWA){
                 view.startHomeMhs()
@@ -40,16 +45,21 @@ class LoginPresenter(private val view: LoginContract.ViewContract,
                 if(permissionManager.isPermissionGranted("android.permission.READ_PHONE_STATE")){
                     imei = permissionManager.getImei()
                     pubKey = keyMgr.generateKeyPair()
-                    repository.doRegisterMhs(pubKey,nimTemp,imei,this)
+                    remoteRepository.doRegisterMhs(pubKey,nimTemp,imei,this)
                 }else{
                     view.showSnackBar(Constants.PERMISSION_DENIED)
                 }
             }
             Constants.IMEI_MATCH -> {
+                sharedPreferenceHelper.apply {
+                    setSharedPreferenceString("nim",nimTemp)
+                    setSharedPreferenceInt("status",Constants.MAHASISWA)
+                    setSharedPreferenceString("kelas",response.data)
+                }
                 view.startHomeMhs()
             }
             Constants.STILL_ACTIVE_STATUS->{
-                view.showDialog(Constants.STILL_ACTIVE_MESSAGE)
+                view.showDialog(Constants.LOGIN_ERROR, Constants.STILL_ACTIVE_MESSAGE, false)
             }
             else -> {
                 view.showSnackBar(Constants.NOT_VERIFIED_MESSAGE)
@@ -65,7 +75,7 @@ class LoginPresenter(private val view: LoginContract.ViewContract,
                 if(permissionManager.isPermissionGranted("android.permission.READ_PHONE_STATE")){
                     imei = permissionManager.getImei()
                     pubKey = keyMgr.generateKeyPair()
-                    repository.doRegisterDsn(pubKey,kddsnTemp,imei,this)
+                    remoteRepository.doRegisterDsn(pubKey,kddsnTemp,imei,this)
                 }else{
                     view.showSnackBar(Constants.PERMISSION_DENIED)
                 }
@@ -74,7 +84,7 @@ class LoginPresenter(private val view: LoginContract.ViewContract,
                 view.startHomeDsn()
             }
             Constants.STILL_ACTIVE_STATUS->{
-                view.showDialog(Constants.STILL_ACTIVE_MESSAGE)
+                view.showDialog(Constants.LOGIN_ERROR, Constants.STILL_ACTIVE_MESSAGE, false)
             }
             else -> {
                 view.showSnackBar(Constants.NOT_VERIFIED_MESSAGE)
@@ -104,14 +114,14 @@ class LoginPresenter(private val view: LoginContract.ViewContract,
         if(currentTab == 1) {
             if (nim != "" && pass != "") {
                 nimTemp = nim
-                repository.doValidateMhs(nim,pass,permissionManager.getImei(),this)
+                remoteRepository.doValidateMhs(nim,pass,permissionManager.getImei(),this)
             } else {
                 view.showSnackBar(Constants.MHS_INVALID_FORM)
             }
         }else {
             if(kddosen != "" && pass != ""){
                 kddsnTemp = kddosen
-                repository.doValidateDosen(kddosen,pass,permissionManager.getImei(),this)
+                remoteRepository.doValidateDosen(kddosen,pass,permissionManager.getImei(),this)
             }else{
                 view.showSnackBar(Constants.DOSEN_INVALID_FORM)
             }

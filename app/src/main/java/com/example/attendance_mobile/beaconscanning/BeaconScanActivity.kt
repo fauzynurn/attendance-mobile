@@ -6,9 +6,11 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.attendance_mobile.R
 import com.example.attendance_mobile.fingerprintauth.FingerprintAuthActivity
-import com.example.attendance_mobile.model.manager.BeaconService
+import com.example.attendance_mobile.home.homedosen.HomeDsnActivity
+import com.example.attendance_mobile.home.homemhs.HomeMhsActivity
+import com.example.attendance_mobile.model.local.SharedPreferenceHelper
+import com.example.attendance_mobile.model.service.BeaconService
 import com.example.attendance_mobile.utils.Constants
-import com.eyro.cubeacon.SystemRequirementManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.android.synthetic.main.beacon_scanning_layout.*
 
@@ -26,7 +28,7 @@ class BeaconScanActivity : AppCompatActivity(), BeaconScanContract.ViewContract{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.beacon_scanning_layout)
-        presenter = BeaconScanPresenter(this)
+        presenter = BeaconScanPresenter(SharedPreferenceHelper(this),this)
         val intent = intent
         ruangan.text = intent.getStringExtra("kodeRuangan")
         presenter.startBeaconRanging(intent.getStringExtra("macAddress"))
@@ -34,20 +36,56 @@ class BeaconScanActivity : AppCompatActivity(), BeaconScanContract.ViewContract{
 
     override fun registerReceiver(beaconReceiver: BeaconService.BeaconReceiver) {
         val intentFilter = IntentFilter()
-        intentFilter.addAction(Constants.START_RANGING)
+        intentFilter.addAction(Constants.ON_TIMEOUT)
+        intentFilter.addAction(Constants.ON_BEACON_FOUND)
         registerReceiver(beaconReceiver, intentFilter)
     }
 
-    override fun startService(macAddress : String) {
-        startService(Intent(this, BeaconService::class.java).putExtra("macAddress",macAddress))
+    override fun unregisterReceiver(beaconReceiver: BeaconService.BeaconReceiver) {
+        unregisterReceiver(beaconReceiver)
     }
 
-    override fun startFingerprintActivity() {
-        startActivity(Intent(this,FingerprintAuthActivity::class.java))
+    override fun stopService(){
+        stopService(Intent(this, BeaconService::class.java))
+    }
+
+    override fun startService(macAddress: String) {
+        val intent = Intent(this, BeaconService::class.java)
+        intent.action = "START_RANGING"
+        intent.putExtra("macAddress",macAddress)
+        startService(intent)
+    }
+
+    override fun startHome(){
         finish()
     }
 
-    override fun checkIfBluetoothActive() : Boolean{
-        return SystemRequirementManager.checkAllRequirementUsingDefaultDialog(this)
+    override fun startFingerprintActivity(macAddress: String) {
+        val intent = Intent(this,FingerprintAuthActivity::class.java)
+        intent.putExtra("macAddress",macAddress)
+        startActivity(intent)
+        finish()
     }
+
+    override fun onBackPressed() {
+        presenter.onBackPressed()
+    }
+
+    override fun startHomeDsn(){
+        startActivity(Intent(this,HomeDsnActivity::class.java))
+        finish()
+    }
+
+    override fun startHomeMhs(){
+        startActivity(Intent(this, HomeMhsActivity::class.java))
+        finish()
+    }
+
+
+
+//    override fun onStop() {
+//        super.onStop()
+//        presenter.onShouldUnregisterReceiver()
+//    }
+
 }

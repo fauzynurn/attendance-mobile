@@ -1,10 +1,10 @@
 package com.example.fingerprintauth
 
+import com.example.attendance_mobile.data.DetailSummary
 import com.example.attendance_mobile.data.Response
-import com.example.attendance_mobile.data.ScheduleMhs
+import com.example.attendance_mobile.data.ScheduleResponse
 import retrofit2.Call
 import retrofit2.http.Body
-import retrofit2.http.GET
 import retrofit2.http.POST
 
 
@@ -21,9 +21,12 @@ interface RetrofitInterface {
     @POST("checkdsn")
     fun checkDsn(@Body body : HashMap<String,String>) : Call<Response>
 
-    @POST("getPresenceSummary")
-    fun fetchPresenceSummary(@Body body : HashMap<String,String>) : Call<HashMap<String, Int>>
+    @POST("getpresencesummary")
+    fun fetchSummary(@Body body : HashMap<String,String>) : Call<HashMap<String, Int>>
 
-    @POST("getScheduleList")
-    fun fetchScheduleList(@Body body : HashMap<String,String>) : Call<ArrayList<ScheduleMhs>>
+    @POST("getjadwal")
+    fun fetchScheduleList(@Body body : HashMap<String,String>) : Call<ScheduleResponse>
+
+    @POST("getsummary")
+    fun fetchSummaryList(@Body body : HashMap<String,String>) : Call<ArrayList<DetailSummary>>
 }

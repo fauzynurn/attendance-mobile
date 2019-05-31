@@ -1,7 +1,8 @@
 package com.example.attendance_mobile.home.homemhs
 
 import com.example.attendance_mobile.BaseView
-import com.example.attendance_mobile.data.ScheduleMhs
+import com.example.attendance_mobile.data.Schedule
+import com.example.attendance_mobile.data.ScheduleResponse
 
 interface HomeMhsContract {
     interface ViewContract : BaseView<HomeMhsPresenter> {
@@ -11,10 +12,12 @@ interface HomeMhsContract {
         fun showSnackBar(message: String)
         fun showDialog(title: String, message: String)
         fun refreshList()
+        fun checkAllRequirement() : Boolean
+        fun handleNoScheduleFound()
     }
 
     interface InteractorContract{
-        fun onScheduleListResult(data : ArrayList<ScheduleMhs>)
+        fun onScheduleListResult(data : ScheduleResponse)
         fun onSummaryResult(summaryData : HashMap<String,Int>)
         fun onFail(error : String?)
     }
@@ -26,7 +29,7 @@ interface HomeMhsContract {
         fun setJenisMatkul(jenisMatkul : String)
         fun setStatusMatkul(statusMatkul : String)
         fun setStatusMatkulColor(colorCode : String)
-        fun setPresenceButtonClickListener(item : ScheduleMhs, clickListener: (ScheduleMhs) -> Unit)
+        fun setPresenceButtonClickListener(item : Schedule, clickListener: (Schedule) -> Unit)
         fun hidePresenceButton()
     }
 }

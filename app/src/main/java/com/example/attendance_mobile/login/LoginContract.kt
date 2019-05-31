@@ -1,6 +1,5 @@
 package com.example.attendance_mobile.login
 
-import android.app.Activity
 import com.example.attendance_mobile.BaseView
 import com.example.attendance_mobile.data.Response
 
@@ -10,7 +9,7 @@ interface LoginContract{
         fun startHomeDsn()
         fun onFirstTimeUse()
         fun showSnackBar(message: String)
-        fun showDialog(message: String)
+        fun showDialog(title : String, message: String, isWithExitListener : Boolean)
     }
     interface InteractorContract{
         fun onValidateMhsResult(response: Response?)

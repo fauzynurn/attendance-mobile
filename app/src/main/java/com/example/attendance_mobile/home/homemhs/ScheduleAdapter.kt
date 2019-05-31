@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.attendance_mobile.R
-import com.example.attendance_mobile.data.ScheduleMhs
+import com.example.attendance_mobile.data.Schedule
 import kotlinx.android.synthetic.main.schedule_mhs_item.view.*
 
 class ScheduleAdapter(private val presenter: HomeMhsPresenter) : RecyclerView.Adapter<ScheduleAdapter.ScheduleViewHolder>() {
@@ -26,7 +26,7 @@ class ScheduleAdapter(private val presenter: HomeMhsPresenter) : RecyclerView.Ad
 
     class ScheduleViewHolder(private val v: View) : RecyclerView.ViewHolder(v), HomeMhsContract.ItemViewContract {
 
-//        fun bind(item: ScheduleMhs, clickListener: (ScheduleMhs) -> Unit) {
+//        fun bind(item: Schedule, clickListener: (Schedule) -> Unit) {
 //            val currentTime: Date = Calendar.getInstance().time
 //            val startTime: Date = TimeUtils.convertStringToDate(item.jamMulai)
 //
@@ -84,7 +84,7 @@ class ScheduleAdapter(private val presenter: HomeMhsPresenter) : RecyclerView.Ad
             v.status_matkul.setTextColor(Color.parseColor(colorCode))
         }
 
-        override fun setPresenceButtonClickListener(item : ScheduleMhs, clickListener: (ScheduleMhs) -> Unit) {
+        override fun setPresenceButtonClickListener(item : Schedule, clickListener: (Schedule) -> Unit) {
             v.presence_button.setOnClickListener { clickListener(item) }
         }
 
