@@ -30,11 +30,11 @@ class NotificationManager {
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
         }
 
-        fun buildForegroundNotification(context : Context) : Notification{
+        fun buildForegroundNotification(context : Context,timeExecution : String) : Notification{
             return NotificationCompat.Builder(context, "CHANNEL_ID")
                 .setSmallIcon(R.drawable.notification_bg)
-                .setContentTitle("Beacon ranging is running")
-                .setContentText("Close enough ;)")
+                .setContentTitle("Menunggu sesi berikutnya")
+                .setContentText("Sesi selanjutnya akan dimulai dalam waktu $timeExecution menit")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT).build()
         }
 

@@ -1,18 +1,19 @@
 package com.example.attendance_mobile.data
 
-import android.os.Parcelable
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import kotlinx.android.parcel.Parcelize
+import io.realm.RealmObject
+import io.realm.annotations.PrimaryKey
+import io.realm.annotations.RealmClass
 
-@Parcelize
-@Entity(primaryKeys = ["sesi","kode_matkul","tgl_kuliah"], tableName = "attendance")
-data class Attendance(
-    @ColumnInfo(name = "sesi") var sesi: Int,
-    @ColumnInfo(name = "kode_matkul") var kodeMatkul: String,
-    @ColumnInfo(name = "jam_mulai") var jamMulai: String,
-    @ColumnInfo(name = "jam_selesai") var jamSelesai: String,
-    @ColumnInfo(name = "has_been_executed") var hasBeenExecuted : Int,
-    @ColumnInfo(name = "mac_address") var macAddress : String,
-    @ColumnInfo(name = "tgl_kuliah") var tglKuliah : String
-) : Parcelable
+@RealmClass
+open class Attendance(
+    @PrimaryKey
+    var id : String = "",
+    var sesi: Int = 0,
+    var kodeMatkul: String = "",
+    var tglKuliah : String = "",
+
+    var jamMulai: String = "",
+    var jamSelesai: String = "",
+    var hasBeenExecuted : Int = 0,
+    var macAddress : String =""
+) : RealmObject()

@@ -8,10 +8,12 @@ import com.example.attendance_mobile.R
 import com.example.attendance_mobile.fingerprintauth.FingerprintAuthActivity
 import com.example.attendance_mobile.home.homedosen.HomeDsnActivity
 import com.example.attendance_mobile.home.homemhs.HomeMhsActivity
+import com.example.attendance_mobile.model.local.LocalRepository
 import com.example.attendance_mobile.model.local.SharedPreferenceHelper
 import com.example.attendance_mobile.model.service.BeaconService
 import com.example.attendance_mobile.utils.Constants
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import io.realm.Realm
 import kotlinx.android.synthetic.main.beacon_scanning_layout.*
 
 
@@ -28,7 +30,7 @@ class BeaconScanActivity : AppCompatActivity(), BeaconScanContract.ViewContract{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.beacon_scanning_layout)
-        presenter = BeaconScanPresenter(SharedPreferenceHelper(this),this)
+        presenter = BeaconScanPresenter(LocalRepository(Realm.getDefaultInstance()), SharedPreferenceHelper(this),this)
         val intent = intent
         ruangan.text = intent.getStringExtra("kodeRuangan")
         presenter.startBeaconRanging(intent.getStringExtra("macAddress"))
@@ -38,6 +40,7 @@ class BeaconScanActivity : AppCompatActivity(), BeaconScanContract.ViewContract{
         val intentFilter = IntentFilter()
         intentFilter.addAction(Constants.ON_TIMEOUT)
         intentFilter.addAction(Constants.ON_BEACON_FOUND)
+        intentFilter.addAction("START_ALARM")
         registerReceiver(beaconReceiver, intentFilter)
     }
 

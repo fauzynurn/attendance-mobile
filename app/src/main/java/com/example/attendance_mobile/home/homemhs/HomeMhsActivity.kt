@@ -14,6 +14,7 @@ import com.example.attendance_mobile.model.remote.RemoteRepository
 import com.eyro.cubeacon.SystemRequirementManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import io.realm.Realm
 import kotlinx.android.synthetic.main.homemhs_layout.*
 
 class HomeMhsActivity : AppCompatActivity(),HomeMhsContract.ViewContract{
@@ -24,7 +25,7 @@ class HomeMhsActivity : AppCompatActivity(),HomeMhsContract.ViewContract{
         super.onCreate(savedInstanceState)
         setContentView(R.layout.homemhs_layout)
         presenter = HomeMhsPresenter(
-            this,LocalRepository(this),RemoteRepository(),SharedPreferenceHelper(this)
+            this,LocalRepository(Realm.getDefaultInstance()),RemoteRepository(),SharedPreferenceHelper(this)
         )
         presenter.doFetchSummaryData()
         presenter.doFetchScheduleList()

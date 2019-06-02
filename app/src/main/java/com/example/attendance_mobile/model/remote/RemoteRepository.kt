@@ -124,11 +124,14 @@ class RemoteRepository {
             true,
             "16TKO6022",
             "07:00:00",
-            "08:40:00",
+            "07:13:00",
             "D219",
             "C2:00:E2:00:00:6A",
-            "07:05:00",
-            arrayListOf(Sesi(1,"07:00:00","07:50:00"),Sesi(2,"07:50:00","08:40:00")))
+            "07:01:00",
+            arrayListOf(Sesi(1,"07:00:00","07:05:00"),
+                Sesi(2,"07:05:00","07:10:00"),
+                Sesi(3,"07:12:00","07:17:00")
+                ))
         val sd2 = Schedule("Pengantar Akuntansi",
             true,
             "16JTK6012",
@@ -138,7 +141,7 @@ class RemoteRepository {
             "C2:00:E2:00:00:6A",
             "08:45:00",
             arrayListOf(Sesi(1,"08:40:00","09:30:00"),Sesi(2,"09:30:00","10:20:00"),Sesi(3,"10:40:00","11:30:00")))
-        val scheduleRes : ScheduleResponse = ScheduleResponse(arrayListOf(sd1,sd2),arrayListOf())
+        val scheduleRes = ScheduleResponse(arrayListOf(sd1,sd2),arrayListOf())
         Handler().postDelayed({
             listener.onScheduleListResult(scheduleRes)
         },2000)

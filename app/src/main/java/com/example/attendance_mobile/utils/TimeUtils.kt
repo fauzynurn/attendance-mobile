@@ -40,8 +40,7 @@ class TimeUtils {
         }
 
         fun getDiff(date1 : Date,date2 : Date) : Long{
-            val diff = date2.time - date1.time
-            return diff/(60 * 1000)
+             return (date2.time - date1.time)/(60*1000)
         }
     }
 }

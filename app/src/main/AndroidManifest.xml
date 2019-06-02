@@ -4,11 +4,13 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <application
+            android:name=".model.local.Application"
             android:allowBackup="true"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
@@ -28,7 +30,7 @@
         <activity android:name=".fingerprintauth.FingerprintAuthActivity"/>
         <activity android:name=".detailmatkul.DetailMatkulActivity"/>
         <service android:name=".model.service.BeaconService" android:enabled="true"/>
-        <receiver android:name=".model.service.BeaconService$BeaconReceiver"/>
+        <service android:name=".model.service.BeaconBackgroundService" android:enabled="true"/>
     </application>
 
 </manifest>

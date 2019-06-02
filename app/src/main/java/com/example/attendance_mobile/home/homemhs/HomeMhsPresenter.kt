@@ -1,6 +1,5 @@
 package com.example.attendance_mobile.home.homemhs
 
-import android.util.Log
 import com.example.attendance_mobile.data.Schedule
 import com.example.attendance_mobile.data.ScheduleResponse
 import com.example.attendance_mobile.model.local.LocalRepository
@@ -76,11 +75,9 @@ class HomeMhsPresenter(
 //                                view.showDialog("Pencatatan Presensi Gagal", Constants.AUTO_TIME_DISABLED_MESSAGE)
 //                            } else {
                                 if (view.checkAllRequirement()) {
+                                    //localRepository.insert(Attendance("TEST1", 1, "KLKL", "XXXLL", "OPOP", "APAPA", 0, "MAC"))
                                     localRepository.saveBulkSchedule(schedule)
-                                    localRepository.getListOfUnsentAttendance{
-                                        Log.i("s","initial size ${it.size}") }
                                     view.startBeaconActivity(schedule.kodeRuangan, schedule.macAddress)
-                                    sharedPreferenceHelper.setSharedPreferenceString("kodeMatkul", schedule.kodeMatkul)
                                 }
                                 // }
                             } else {

@@ -1,11 +1,12 @@
 package com.example.attendance_mobile.beaconscanning
 
+import com.example.attendance_mobile.model.local.LocalRepository
 import com.example.attendance_mobile.model.local.SharedPreferenceHelper
 import com.example.attendance_mobile.model.manager.PermissionManager
 import com.example.attendance_mobile.model.service.BeaconService
 import com.example.attendance_mobile.utils.Constants
 
-class BeaconScanPresenter(val sharedPreferenceHelper: SharedPreferenceHelper, private val view : BeaconScanContract.ViewContract) : BeaconScanContract.InteractorContract {
+class BeaconScanPresenter(val localRepository: LocalRepository, val sharedPreferenceHelper: SharedPreferenceHelper, private val view : BeaconScanContract.ViewContract) : BeaconScanContract.InteractorContract {
     lateinit var receiver : BeaconService.BeaconReceiver
     fun startBeaconRanging(macAddress : String){
         receiver = BeaconService.BeaconReceiver(this)
@@ -16,6 +17,7 @@ class BeaconScanPresenter(val sharedPreferenceHelper: SharedPreferenceHelper, pr
 
     override fun onDeviceInBeaconRange(macAddress: String) {
         view.startFingerprintActivity(macAddress)
+        localRepository.releaseSchedule(false)
         PermissionManager.switchBluetoothState()
         view.stopService()
     }
