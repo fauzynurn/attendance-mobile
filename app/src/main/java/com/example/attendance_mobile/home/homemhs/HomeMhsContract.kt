@@ -1,23 +1,28 @@
 package com.example.attendance_mobile.home.homemhs
 
 import com.example.attendance_mobile.BaseView
-import com.example.attendance_mobile.data.Schedule
-import com.example.attendance_mobile.data.ScheduleResponse
+import com.example.attendance_mobile.data.JadwalMhs
+import com.example.attendance_mobile.data.Ruangan
+import com.example.attendance_mobile.data.response.ScheduleResponse
 
 interface HomeMhsContract {
     interface ViewContract : BaseView<HomeMhsPresenter> {
-        fun startBeaconActivity(kodeRuangan : String, macAddress : String)
+        fun startBeaconActivity(ruangan: Ruangan)
+        fun startDetailPerSessionActivity(schedule: JadwalMhs)
         fun onSummaryDataLoaded(data : HashMap<String,Int>)
-        fun onScheduleListLoaded()
+        fun onRegulerScheduleListLoaded()
+        fun onAltScheduleListLoaded()
         fun showSnackBar(message: String)
         fun showDialog(title: String, message: String)
-        fun refreshList()
+        fun refreshRegulerList()
+        fun refreshAltList()
         fun checkAllRequirement() : Boolean
-        fun handleNoScheduleFound()
+        fun handleNoRegulerScheduleFound()
+        fun handleNoAltScheduleFound()
     }
 
     interface InteractorContract{
-        fun onScheduleListResult(data : ScheduleResponse)
+        fun onScheduleListResult(data : ScheduleResponse<JadwalMhs>)
         fun onSummaryResult(summaryData : HashMap<String,Int>)
         fun onFail(error : String?)
     }
@@ -29,7 +34,7 @@ interface HomeMhsContract {
         fun setJenisMatkul(jenisMatkul : String)
         fun setStatusMatkul(statusMatkul : String)
         fun setStatusMatkulColor(colorCode : String)
-        fun setPresenceButtonClickListener(item : Schedule, clickListener: (Schedule) -> Unit)
+        fun setPresenceButtonClickListener(item : JadwalMhs, clickListener: (JadwalMhs) -> Unit)
         fun hidePresenceButton()
     }
 }

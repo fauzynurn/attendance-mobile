@@ -32,6 +32,10 @@ class LoginActivity : AppCompatActivity(), LoginContract.ViewContract {
         presenter.onEnterApp()
     }
 
+    override fun toggleBtn() {
+        next_btn.isEnabled = !next_btn.isEnabled
+    }
+
     override fun startHomeMhs() {
         startActivity(Intent(this,HomeMhsActivity::class.java))
         finish()

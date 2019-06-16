@@ -33,5 +33,6 @@ class Constants{
         const val BEACON_BACKGROUND_RANGING_TIMEOUT = "BEACON_BACKGROUND_RANGING_TIMEOUT"
         const val HADIR = 1
         const val TIDAK_HADIR = 0
+        const val TANPA_KETERANGAN = 2
     }
 }

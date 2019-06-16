@@ -136,37 +136,71 @@
             </LinearLayout>
         </RelativeLayout>
     </RelativeLayout>
-<RelativeLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
-    <com.facebook.shimmer.ShimmerFrameLayout
-            android:id="@+id/schedule_list_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-    >
-        <LinearLayout
-                android:id="@+id/schedule_list_ph_container"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            <include layout="@layout/schedule_list_placeholder"/>
-            <include layout="@layout/schedule_list_placeholder"/>
-            <include layout="@layout/schedule_list_placeholder"/>
-            <include layout="@layout/schedule_list_placeholder"/>
-        </LinearLayout>
-    </com.facebook.shimmer.ShimmerFrameLayout>
-    <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/schedule_list"
-            android:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-    />
-    <LinearLayout android:visibility="gone" android:id="@+id/no_schedule_found_warning" android:layout_centerInParent="true" android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content">
-        <ImageView android:layout_width="90dp" android:layout_gravity="center"
-                   android:layout_height="90dp" android:src="@drawable/calendar"/>
-        <TextView android:layout_marginTop="15dp" android:textSize="20sp" android:fontFamily="@font/productsansmedium" android:layout_gravity="center" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Tidak ada jadwal untuk hari ini"/>
+    <ScrollView android:layout_width="wrap_content" android:layout_height="wrap_content">
+        <LinearLayout android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content">
+    <LinearLayout android:layout_marginTop="10dp" android:layout_width="wrap_content" android:layout_height="wrap_content">
+        <TextView android:layout_marginEnd="13dp" android:textSize="19sp" android:textColor="@color/black" android:fontFamily="@font/productsansbold" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Jadwal Reguler"/>
+        <View android:layout_gravity="center_vertical" android:background="@color/black" android:layout_width="match_parent" android:layout_height="1dp"/>
     </LinearLayout>
-</RelativeLayout>
+    <RelativeLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+        <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/schedule_list_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+        >
+            <LinearLayout
+                    android:id="@+id/schedule_list_ph_container"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                <include layout="@layout/schedule_list_placeholder"/>
+                <include layout="@layout/schedule_list_placeholder"/>
+            </LinearLayout>
+        </com.facebook.shimmer.ShimmerFrameLayout>
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/schedule_list"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+        />
+        <TextView android:visibility="gone" android:id="@+id/no_reguler_schedule_text" android:textSize="17sp" android:fontFamily="@font/productsansbold" android:layout_centerInParent="true" android:text="Tidak ada jadwal hari ini" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+    </RelativeLayout>
+    <LinearLayout android:layout_marginTop="10dp" android:layout_width="wrap_content" android:layout_height="wrap_content">
+        <TextView android:layout_marginEnd="13dp" android:textSize="19sp" android:textColor="@color/black" android:fontFamily="@font/productsansbold" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Jadwal Pengganti"/>
+        <View android:layout_gravity="center_vertical" android:background="@color/black" android:layout_width="match_parent" android:layout_height="1dp"/>
+    </LinearLayout>
+    <RelativeLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+        <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/alt_schedule_list_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+        >
+            <LinearLayout
+                    android:id="@+id/alt_schedule_list_ph_container"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                <include layout="@layout/schedule_list_placeholder"/>
+                <include layout="@layout/schedule_list_placeholder"/>
+            </LinearLayout>
+        </com.facebook.shimmer.ShimmerFrameLayout>
+        <androidx.recyclerview.widget.RecyclerView
+                android:nestedScrollingEnabled="false"
+                android:id="@+id/alt_schedule_list"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+        />
+        <TextView android:visibility="gone" android:id="@+id/no_alt_schedule_text" android:textSize="17sp" android:fontFamily="@font/productsansbold" android:layout_centerInParent="true" android:text="Tidak ada jadwal hari ini" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+    </RelativeLayout>
+        </LinearLayout>
+</ScrollView>
 </LinearLayout>

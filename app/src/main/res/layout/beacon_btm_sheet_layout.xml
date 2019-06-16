@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:paddingStart="20dp"
+              android:paddingEnd="20dp"
+              android:paddingTop="30dp"
+              android:paddingBottom="0dp"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <RelativeLayout android:layout_marginBottom="5dp" android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+        <TextView android:layout_centerHorizontal="true" android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="Memindai sinyal beacon..." android:textColor="@color/darkerGrey" android:textSize="20sp"
+                  android:fontFamily="@font/productsansbold"/>
+    </RelativeLayout>
+    <LinearLayout android:orientation="vertical"
+                  android:layout_gravity="center_horizontal"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content">
+        <ImageView
+                android:layout_gravity="center"
+                android:src="@drawable/signal"
+                android:layout_width="80dp"
+                android:layout_height="100dp"/>
+        <TextView
+                android:layout_marginTop="5dp"
+                android:id="@+id/info_text_1"
+                android:textSize="18sp"
+                android:fontFamily="@font/productsansmedium"
+                android:text="Silahkan masuk ke ruangan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        <TextView
+                android:textSize="25sp"
+                android:id="@+id/btm_sheet_ruangan"
+                android:layout_gravity="center"
+                android:fontFamily="@font/productsansbold"
+                android:text="ruangan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        <TextView
+                android:textSize="18sp"
+                android:id="@+id/info_text_2"
+                android:layout_gravity="center"
+                android:fontFamily="@font/productsansmedium"
+                android:text="untuk melanjutkan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+    </LinearLayout>
+    <com.google.android.material.button.MaterialButton
+            android:layout_marginTop="14dp"
+            app:cornerRadius="4dp"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:textSize="18sp"
+            android:layout_gravity="center_horizontal"
+            android:fontFamily="@font/productsansbold"
+            app:backgroundTint="#fc6767"
+            android:textColor="@color/white"
+            android:id="@+id/cancel_beacon_btn"
+            android:layout_marginBottom="18dp"
+            android:textAllCaps="false"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:text="Batalkan pemindaian beacon"/>
+</LinearLayout>

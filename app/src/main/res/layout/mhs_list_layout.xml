@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/mhs_list_parent"
+        android:orientation="vertical"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <LinearLayout android:orientation="vertical" android:layout_width="match_parent" android:layout_height="wrap_content">
+        <LinearLayout android:orientation="horizontal" android:layout_width="wrap_content"
+                      android:layout_height="wrap_content">
+            <ImageView android:id="@+id/mhs_list_back_btn" android:layout_width="wrap_content"
+                       android:layout_height="wrap_content" android:src="@drawable/ic_keyboard_arrow_left_black_48dp"/>
+            <TextView android:layout_gravity="center" android:layout_width="wrap_content"
+                      android:layout_height="wrap_content" android:fontFamily="@font/productsansbold"
+                      android:textColor="@color/black" android:text="Daftar Kehadiran Mahasiswa"
+                      android:textSize="21sp"/>
+        </LinearLayout>
+        <RelativeLayout
+                android:layout_gravity="center_horizontal"
+                android:id="@+id/summary_view"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:layout_marginTop="18dp"
+                android:background="@drawable/rounded_rect"
+                android:layout_width="wrap_content" android:layout_height="wrap_content">
+            <LinearLayout
+                    android:id="@+id/total_present_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                <TextView
+                        android:id="@+id/total_present"
+                        android:layout_marginEnd="10dp"
+                        android:fontFamily="@font/productsansmedium"
+                        android:textSize="20dp"
+                        android:textColor="@color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" android:text="0"/>
+                <TextView
+                        android:id="@+id/hadir_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/productsansbold"
+                        android:textSize="20sp"
+                        android:textColor="@color/white"
+                        android:text="Hadir"/>
+            </LinearLayout>
+            <RelativeLayout android:layout_toEndOf="@id/total_present_container" android:layout_marginEnd="25dp"
+                            android:layout_marginStart="25dp" android:id="@+id/divider"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+                <View android:layout_width="2dp"
+                      android:layout_height="30dp"
+                      android:background="@color/white"
+                />
+            </RelativeLayout>
+            <LinearLayout
+                    android:layout_toEndOf="@id/divider"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                <TextView
+                        android:layout_marginEnd="10dp"
+                        android:fontFamily="@font/productsansmedium"
+                        android:textSize="20dp"
+                        android:id="@+id/total_absent"
+                        android:textColor="@color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"/>
+                <TextView
+                        android:id="@+id/tdk_hadir_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/productsansbold"
+                        android:textSize="20sp"
+                        android:textColor="@color/white"
+                        android:text="Tidak hadir"/>
+            </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+    <RelativeLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+        <com.github.rahatarmanahmed.cpv.CircularProgressView
+                android:id="@+id/loading_view"
+                android:layout_marginTop="13dp"
+                android:layout_marginBottom="13dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_centerInParent="true"
+                app:cpv_animAutostart="true"
+                app:cpv_indeterminate="true"/>
+    <androidx.recyclerview.widget.RecyclerView
+            android:layout_marginTop="15dp"
+            android:id="@+id/mhs_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+    />
+        <TextView android:id="@+id/no_data_found_text" android:visibility="gone" android:textSize="18sp" android:fontFamily="@font/productsansmedium" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_centerInParent="true"
+        android:text="Belum ada mahasiswa yang hadir"
+        />
+    </RelativeLayout>
+</LinearLayout>

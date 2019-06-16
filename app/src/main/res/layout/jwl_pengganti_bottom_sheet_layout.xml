@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:padding="20dp"
+              android:paddingBottom="0dp"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <RelativeLayout android:layout_marginBottom="18dp" android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+        <TextView android:layout_centerVertical="true" android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="Buat jadwal pengganti" android:textColor="@color/black" android:textSize="23sp"
+                  android:fontFamily="@font/productsansbold"/>
+        <ImageView android:layout_alignParentEnd="true" android:layout_width="32dp" android:layout_height="32dp"
+                   android:src="@drawable/ic_keyboard_arrow_down_black_24dp"/>
+    </RelativeLayout>
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content">
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/matkul_field"
+                android:layout_width="match_parent"
+                android:layout_marginEnd="13dp"
+                app:boxStrokeColor="#cecece"
+                android:hint="Mata kuliah"
+                android:layout_height="60dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+
+            <AutoCompleteTextView
+                    android:id="@+id/matkul_dropdown"
+                    android:enabled="false"
+                    android:textSize="15sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+    <LinearLayout android:layout_marginTop="14dp" android:layout_width="match_parent"
+                  android:layout_height="wrap_content">
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/kelas_field"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                app:boxStrokeColor="#cecece"
+                android:hint="Kelas"
+                android:layout_marginEnd="10dp"
+                android:layout_height="60dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+
+            <AutoCompleteTextView
+                    android:id="@+id/kelas_dropdown"
+                    android:enabled="false"
+                    android:textSize="15sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tgl_field"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                app:endIconMode="custom"
+                app:endIconDrawable="@drawable/ic_date_range_black_24dp"
+                android:hint="Tanggal"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tgl_datepicker"
+                    android:enabled="false"
+                    android:textSize="15sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
+    <LinearLayout android:id="@+id/jam_kosong_container" android:orientation="vertical"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_marginTop="14dp">
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:textSize="18sp"
+                  android:textColor="@color/black"
+                  android:fontFamily="@font/productsansmedium"
+                  android:text="Jam kosong tersedia"/>
+        <TextView android:id="@+id/no_session_available_warning" android:layout_marginTop="15dp" android:fontFamily="@font/productsansmedium" android:layout_gravity="center_horizontal" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:text="Jam kosong tidak tersedia"/>
+        <com.github.rahatarmanahmed.cpv.CircularProgressView
+                android:id="@+id/loading_view"
+                android:visibility="gone"
+                android:layout_marginTop="13dp"
+                android:layout_marginBottom="13dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_horizontal"
+                app:cpv_animAutostart="true"
+                app:cpv_indeterminate="true" />
+        <com.google.android.material.chip.ChipGroup
+                android:visibility="gone"
+                android:id="@+id/real_group_chips"
+                android:layout_marginTop="13dp"
+                android:layout_marginBottom="13dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:chipSpacingHorizontal="9dp"
+                app:chipSpacingVertical="5dp"
+                app:singleSelection="true">
+
+        </com.google.android.material.chip.ChipGroup>
+    </LinearLayout>
+    <LinearLayout android:layout_marginTop="14dp" android:layout_width="match_parent"
+                  android:layout_height="wrap_content">
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/ruangan_field"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:hint="Ruangan kosong tersedia"
+                android:layout_height="60dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+
+            <AutoCompleteTextView
+                    android:id="@+id/ruangan_dropdown"
+                    android:enabled="false"
+                    android:textSize="15sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+    <com.google.android.material.button.MaterialButton
+            android:layout_marginTop="14dp"
+            app:cornerRadius="4dp"
+            android:enabled="false"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:textSize="18sp"
+            android:layout_gravity="center_horizontal"
+            android:fontFamily="@font/productsansbold"
+            app:backgroundTint="#bababa"
+            android:textColor="#7c7c7c"
+            android:id="@+id/jwl_confirm_btn"
+            android:layout_marginBottom="18dp"
+            android:textAllCaps="false"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="Buat jadwal pengganti"/>
+</LinearLayout>

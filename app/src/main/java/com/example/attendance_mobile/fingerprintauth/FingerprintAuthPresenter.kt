@@ -16,7 +16,7 @@ class FingerprintAuthPresenter(val localRepository: LocalRepository,val view : F
     }
     override fun onAuthenticated() {
         val list = localRepository.getListOfUnsentAttendance()
-        val pair = localRepository.getPairSession(false)
+        val pair = localRepository.getPairSession()
         val startTime = Date(System.currentTimeMillis())
         val endTime = if (pair.second == null) {
             TimeUtils.convertStringToDate(pair.first!!.jamSelesai)!!

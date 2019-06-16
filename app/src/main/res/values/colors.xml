@@ -5,6 +5,7 @@
     <color name="black">#000000</color>
     <color name="blue">#6b86ef</color>
     <color name="grey">#dbdbdb</color>
+    <color name="darkerGrey">#7c7c7c</color>
     <color name="white">#FFFFFF</color>
     <color name="colorAccent">#D81B60</color>
 </resources>

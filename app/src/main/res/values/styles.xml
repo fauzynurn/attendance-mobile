@@ -18,4 +18,35 @@
         <item name="android:textSize">18sp</item>
     </style>
 
+    <style name="tooltipStyle">
+        <item name="cornerRadius">6dp</item>
+        <item name="android:textColor">#1d61db</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/productsansbold</item>
+        <item name="backgroundColor">@color/white</item>
+    </style>
+
+    <!-- set the rounded drawable as background to your bottom sheet -->
+    <style name="BottomSheet" parent="@style/Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/bg_bottom_sheet</item>
+    </style>
+
+    <style name="BaseBottomSheetDialog" parent="@style/Theme.Design.Light.BottomSheetDialog">
+        <item name="colorPrimary">@color/black</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="bottomSheetStyle">@style/BottomSheet</item>
+    </style>
+
+    <style name="dropdownStyle" parent="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu">
+        <item name="colorControlNormal">#c5c5c5</item>
+        <item name="boxBackgroundColor">@color/blue</item>
+        <item name="colorControlActivated">@color/blue</item>
+    </style>
+
+    <style name="BottomSheetDialogTheme" parent="BaseBottomSheetDialog"/>
+    <style name="btnStyle" parent="@style/Widget.MaterialComponents.Button.TextButton">
+        <item name="backgroundTint">@color/btn_bg_color</item>
+        <item name="android:textColor">@color/btn_text_color</item>
+    </style>
 </resources>

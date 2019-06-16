@@ -12,7 +12,6 @@ import com.example.attendance_mobile.model.local.LocalRepository
 import com.example.attendance_mobile.model.manager.PermissionManager
 import com.example.attendance_mobile.model.service.BeaconBackgroundService
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import io.realm.Realm
 
 class FingerprintAuthActivity : AppCompatActivity(), FingerprintAuthContract.ViewContract{
     override lateinit var presenter: FingerprintAuthPresenter
@@ -20,7 +19,7 @@ class FingerprintAuthActivity : AppCompatActivity(), FingerprintAuthContract.Vie
         super.onCreate(savedInstanceState)
         setContentView(R.layout.fingerprint_auth_layout)
         val intent = intent
-        presenter = FingerprintAuthPresenter(LocalRepository(Realm.getDefaultInstance()),this, PermissionManager(this))
+        presenter = FingerprintAuthPresenter(LocalRepository(),this, PermissionManager(this))
         presenter.startAuth(intent.getStringExtra("macAddress"))
     }
 

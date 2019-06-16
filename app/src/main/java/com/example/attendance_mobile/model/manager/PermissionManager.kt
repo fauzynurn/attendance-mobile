@@ -8,6 +8,7 @@ import android.content.Context.FINGERPRINT_SERVICE
 import android.content.Context.NOTIFICATION_SERVICE
 import android.content.pm.PackageManager
 import android.hardware.fingerprint.FingerprintManager
+import android.net.ConnectivityManager
 import android.telephony.TelephonyManager
 
 class PermissionManager(private val context : Context) {
@@ -63,5 +64,9 @@ class PermissionManager(private val context : Context) {
 
     fun getNotificationSystemService() : NotificationManager{
         return context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+    }
+
+    fun getConnectivityService() : ConnectivityManager{
+        return context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     }
 }

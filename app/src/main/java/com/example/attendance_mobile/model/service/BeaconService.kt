@@ -7,7 +7,8 @@ import android.content.Intent
 import android.os.Handler
 import android.os.IBinder
 import android.util.Log
-import com.example.attendance_mobile.beaconscanning.BeaconScanContract
+import com.example.attendance_mobile.model.BaseBeaconInteractor
+import com.example.attendance_mobile.model.local.LocalRepository
 import com.example.attendance_mobile.utils.Constants
 import com.example.attendance_mobile.utils.NotificationManager
 import com.example.attendance_mobile.utils.WakeLocker
@@ -59,7 +60,6 @@ class BeaconService : CBServiceListener, CBRangingListener, Service() {
 
     override fun onBeaconServiceConnect() {
         Log.i("XX", "ONBEACONSERVICE CALLED")
-        Log.i("XX", "MACADDRESS: $macAddress")
         cubeacon.addRangingListener(this)
         cubeacon.startRangingBeaconsInRegion(region)
         handler = Handler()
@@ -75,17 +75,19 @@ class BeaconService : CBServiceListener, CBRangingListener, Service() {
         }, 25 * 1000)
     }
 
-    class BeaconReceiver(private val interactorContract: BeaconScanContract.InteractorContract) :
+    class BeaconReceiver<T : BaseBeaconInteractor>(private val interactorContract: T) :
         BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
                 Constants.ON_BEACON_FOUND -> {
                     Log.i("xx", "ON_BEACON_FOUND_CALLED")
-                    interactorContract.onDeviceInBeaconRange(intent.getStringExtra("macAddress"))
+                    interactorContract.onBeaconFound()
                 }
                 Constants.ON_TIMEOUT -> {
                     Log.i("xx", "ON_TIMEOUT_CALLED")
-                    interactorContract.onBeaconRangingTimeout()
+                    val localRepository = LocalRepository()
+                    localRepository.deleteAllRows()
+                    interactorContract.onTimeout()
                     NotificationManager.showNotification(
                         context,
                         NotificationManager

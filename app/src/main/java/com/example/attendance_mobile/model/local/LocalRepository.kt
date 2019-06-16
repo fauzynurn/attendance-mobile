@@ -1,28 +1,20 @@
 package com.example.attendance_mobile.model.local
 
-import com.example.attendance_mobile.data.Attendance
-import com.example.attendance_mobile.data.Schedule
-import com.example.attendance_mobile.utils.Converters
+import com.example.attendance_mobile.data.JadwalMhs
+import com.example.attendance_mobile.data.LocalAttendance
+import com.example.attendance_mobile.data.response.AttendanceResponse
 import com.example.attendance_mobile.utils.TimeUtils
 import io.realm.Realm
 
 
-class LocalRepository(val realm : Realm) {
-    fun getPairSession(doInBackgroundThread : Boolean): Pair<Attendance?, Attendance?> {
-        var list = mutableListOf<Attendance>()
-        list = if(doInBackgroundThread) {
-            val backgroundRealm = Realm.getDefaultInstance()
-            backgroundRealm?.where(Attendance::class.java)
-                ?.equalTo("hasBeenExecuted", 0.toInt())
-                ?.limit(2)
-                ?.sort("sesi")
-                ?.findAll()?.toMutableList()!!
-        }else{
-            realm.where(Attendance::class.java)
-                ?.equalTo("hasBeenExecuted", 0.toInt())
-                ?.limit(2)
-                ?.findAll()?.toMutableList()!!
-        }
+class LocalRepository {
+    fun getPairSession(): Pair<LocalAttendance?, LocalAttendance?> {
+            val realm = Realm.getDefaultInstance()
+            val list = realm.where(LocalAttendance::class.java)
+                .equalTo("hasBeenExecuted", 0.toInt())
+                .limit(2)
+                .sort("sesi")
+                .findAll()?.toList()!!
         return when (list.size) {
             1 -> {
                 Pair(list[0], null)
@@ -31,78 +23,111 @@ class LocalRepository(val realm : Realm) {
                 Pair(null, null)
             }
             else -> {
-                Pair(list.get(0), list.get(1))
+                Pair(list[0], list[1])
             }
         }
     }
 
-    fun getListOfUnsentAttendance(): List<Attendance> {
-        return realm.where(Attendance::class.java)
+    fun getListOfUnsentAttendance(): List<LocalAttendance>? {
+        val realm = Realm.getDefaultInstance()
+        return realm.where(LocalAttendance::class.java)
             ?.equalTo("hasBeenExecuted", 0.toInt())
             ?.sort("sesi")
-            ?.findAll()?.toList()!!
+            ?.findAll()?.toList()
     }
 
-    fun releaseSchedule(doInBackgroundThread : Boolean) {
-        val backgroundRealm = Realm.getDefaultInstance()
-        val data = backgroundRealm.where(Attendance::class.java)
-            ?.equalTo("hasBeenExecuted", 0.toInt())
-            ?.sort("sesi")
-            ?.findAll()
-        if(!doInBackgroundThread) {
-            realm.executeTransaction {
-                data?.deleteFirstFromRealm()
-            }
-        }else{
-            backgroundRealm.executeTransaction {
-                data?.deleteFirstFromRealm()
-            }
+//    fun releaseItemFromQueue() {
+//        val realm = Realm.getDefaultInstance()
+//        val data = realm.where(LocalAttendance::class.java)
+//            ?.equalTo("hasBeenExecuted", 0.toInt())
+//            ?.sort("sesi")
+//            ?.findFirst()
+//        realm.executeTransaction {
+//            data?.deleteFromRealm()
+//        }
+//    }
+
+//    fun getItemFromQueue(callback : (LocalAttendance?) -> Unit) {
+//        val realm = Realm.getDefaultInstance()
+//        val data = realm.where(LocalAttendance::class.java)
+//            ?.equalTo("hasBeenExecuted", 1.toInt())
+//            ?.sort("sesi")
+//            ?.findFirst()
+//        realm.executeTransaction {
+//            callback(data)
+//        }
+//    }
+
+    fun releaseAllExecutedItem() {
+        val realm = Realm.getDefaultInstance()
+        val data = realm.where(LocalAttendance::class.java)
+            .equalTo("hasBeenExecuted", 1.toInt())
+            .findAll()
+        realm.executeTransaction {
+            data?.deleteAllFromRealm()
         }
-
     }
 
-    fun insert(attendance: Attendance) {
-        realm.executeTransaction { it.insert(attendance) }
-    }
-
-    //Asumsi hanya berjalan pada background thread
-    fun updateLocalAttendance(attendance: Attendance) {
-        val backgroundRealm = Realm.getDefaultInstance()
-        val newAttendance = backgroundRealm.where(Attendance::class.java)
-            ?.equalTo("hasBeenExecuted", 0.toInt())
+    //for testing purpose
+    fun getAllExecutedItem() : List<LocalAttendance>?{
+        val realm = Realm.getDefaultInstance()
+        return realm.where(LocalAttendance::class.java)
+            ?.equalTo("hasBeenExecuted", 1.toInt())
             ?.sort("sesi")
-            ?.equalTo("sesi", attendance.sesi)?.findFirst()
-        backgroundRealm.executeTransaction {
+            ?.findAll()?.toList()
+    }
+
+//    fun insert(attendance: LocalAttendance) {
+//        realm.executeTransaction { it.insert(attendance) }
+//    }
+
+    fun updateItemFromQueue(tgl : String) {
+        val realm = Realm.getDefaultInstance()
+        val newAttendance = realm.where(LocalAttendance::class.java)
+            .equalTo("hasBeenExecuted", 0.toInt())
+            .sort("sesi")
+            .findFirst()
+        realm.executeTransaction {
             newAttendance?.hasBeenExecuted = 1
+            newAttendance?.attendanceResponse?.tglKuliah = tgl
         }
     }
 
-    fun saveBulkSchedule(data: Schedule) {
+    fun saveBulkSchedule(nim : String, data: JadwalMhs) {
+        val realm = Realm.getDefaultInstance()
         val kodeMatkul = data.kodeMatkul
-        val macAddress = data.macAddress
-        val list = mutableListOf<Attendance>()
+        val macAddress = data.ruangan.macAddress
+        val list = mutableListOf<LocalAttendance>()
+        val currentDate = TimeUtils.getCurrentDate()
         for (subItem in data.jamMatkul) {
-            val (sesi, jamMulai, jamSelesai) = subItem
-            val attendance = Attendance(
-                Converters.convertAttributesToSingleString(
-                    sesi.toString(),
-                    kodeMatkul,
-                    TimeUtils.getCurrentTimeInString()
+            val scheduleDate = TimeUtils.convertStringToDate(subItem.jamSelesai)
+            if (currentDate < scheduleDate)  {
+                val (sesi, jamMulai, jamSelesai) = subItem
+                val attendance = LocalAttendance(
+                    sesi,
+                    AttendanceResponse(
+                        nim,
+                        kodeMatkul,
+                        TimeUtils.getDateInString(TimeUtils.getCurrentDate(), "dd-MM-yyyy HH:mm")
+                    ),
+                    jamMulai,
+                    jamSelesai,
+                    0,
+                    macAddress
                 )
-                , sesi, kodeMatkul, TimeUtils.getCurrentTimeInString(), jamMulai, jamSelesai, 0, macAddress
-            )
-            list.add(attendance)
+                list.add(attendance)
+            }
         }
         realm.executeTransaction {
             it.insert(list)
         }
     }
-//
-//    fun deleteAllRows(){
-//        Single.fromCallable { roomInstance?.clearAllTables() }
-//            .subscribeOn(Schedulers.io())
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .subscribe()
-//    }
+
+    fun deleteAllRows() {
+        val realm = Realm.getDefaultInstance()
+        realm.executeTransaction {
+            it.delete(LocalAttendance::class.java)
+        }
+    }
 
 }

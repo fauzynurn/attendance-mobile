@@ -1,6 +1,6 @@
 package com.example.attendance_mobile.login
 
-import com.example.attendance_mobile.data.Response
+import com.example.attendance_mobile.data.response.BaseResponse
 import com.example.attendance_mobile.model.local.SharedPreferenceHelper
 import com.example.attendance_mobile.model.manager.KeyManager
 import com.example.attendance_mobile.model.manager.PermissionManager
@@ -16,6 +16,7 @@ class LoginPresenter(private val view: LoginContract.ViewContract,
     var kddsnTemp : String = "0"
 
     override fun onFail(error: String?) {
+        view.toggleBtn()
         view.showSnackBar("Error ocurred, $error")
     }
 
@@ -37,7 +38,7 @@ class LoginPresenter(private val view: LoginContract.ViewContract,
         }
     }
 
-    override fun onValidateMhsResult(response: Response?) {
+    override fun onValidateMhsResult(response: BaseResponse?) {
         val imei : String
         val pubKey: String
         when(response?.message){
@@ -67,7 +68,7 @@ class LoginPresenter(private val view: LoginContract.ViewContract,
         }
     }
 
-    override fun onValidateDsnResult(response: Response?) {
+    override fun onValidateDsnResult(response: BaseResponse?) {
         val imei : String
         val pubKey: String
         when(response?.message){
@@ -92,7 +93,7 @@ class LoginPresenter(private val view: LoginContract.ViewContract,
         }
     }
 
-    override fun onRegisterMhsResult(response: Response?) {
+    override fun onRegisterMhsResult(response: BaseResponse?) {
         sharedPreferenceHelper.apply {
             setSharedPreferenceString("nim",nimTemp)
             setSharedPreferenceInt("status",Constants.MAHASISWA)
@@ -113,6 +114,7 @@ class LoginPresenter(private val view: LoginContract.ViewContract,
     fun handleLogin(currentTab : Int , kddosen : String, nim : String, pass : String){
         if(currentTab == 1) {
             if (nim != "" && pass != "") {
+                view.toggleBtn()
                 nimTemp = nim
                 remoteRepository.doValidateMhs(nim,pass,permissionManager.getImei(),this)
             } else {
@@ -120,6 +122,7 @@ class LoginPresenter(private val view: LoginContract.ViewContract,
             }
         }else {
             if(kddosen != "" && pass != ""){
+                view.toggleBtn()
                 kddsnTemp = kddosen
                 remoteRepository.doValidateDosen(kddosen,pass,permissionManager.getImei(),this)
             }else{

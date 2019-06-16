@@ -18,7 +18,7 @@ class NotificationManager {
         }
 
         fun getId() : Int{
-            return TimeUtils.getCurrentDate()
+            return TimeUtils.getCurrentDateInInt()
         }
 
         fun buildNotification(context: Context,title : String, content : String) : NotificationCompat.Builder{
@@ -34,7 +34,7 @@ class NotificationManager {
             return NotificationCompat.Builder(context, "CHANNEL_ID")
                 .setSmallIcon(R.drawable.notification_bg)
                 .setContentTitle("Menunggu sesi berikutnya")
-                .setContentText("Sesi selanjutnya akan dimulai dalam waktu $timeExecution menit")
+                .setContentText("KehadiranPerSesi selanjutnya akan dimulai dalam waktu $timeExecution menit")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT).build()
         }
 

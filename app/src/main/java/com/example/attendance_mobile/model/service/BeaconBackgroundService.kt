@@ -9,6 +9,7 @@ import android.os.IBinder
 import android.util.Log
 import com.example.attendance_mobile.model.local.LocalRepository
 import com.example.attendance_mobile.model.manager.PermissionManager
+import com.example.attendance_mobile.model.remote.RemoteRepository
 import com.example.attendance_mobile.utils.Constants
 import com.example.attendance_mobile.utils.NotificationManager
 import com.example.attendance_mobile.utils.TimeUtils
@@ -23,6 +24,7 @@ class BeaconBackgroundService : CBServiceListener, CBRangingListener, Service() 
     private lateinit var handler: Handler
     private var macAddress: String = ""
     private lateinit var localRepository: LocalRepository
+    private lateinit var remoteRepository : RemoteRepository
     private lateinit var startTime: Date
     private lateinit var endTime: Date
     private lateinit var realm : Realm
@@ -36,8 +38,13 @@ class BeaconBackgroundService : CBServiceListener, CBRangingListener, Service() 
             stopSelf()
             cubeacon.disconnect(this)
             stopForeground(STOP_FOREGROUND_REMOVE)
-            localRepository.releaseSchedule(true)
-            val pair = localRepository.getPairSession(true)
+
+            localRepository.updateItemFromQueue(TimeUtils.getDateInString(TimeUtils.getCurrentDate(), "dd-MM-yyyy HH:mm"))
+            val unsentAttendance = localRepository.getListOfUnsentAttendance()
+            remoteRepository.doStoreCurrentAttendance(unsentAttendance!!.map { item -> item.attendanceResponse!! }
+            ) { localRepository.releaseAllExecutedItem() }
+
+            val pair = localRepository.getPairSession()
             if(pair.first != null) {
                 NotificationManager.showNotification(
                     this,
@@ -67,7 +74,7 @@ class BeaconBackgroundService : CBServiceListener, CBRangingListener, Service() 
     override fun onCreate() {
         region = CBRegion("regiontest", UUID.fromString(Constants.REGION))
         realm = Realm.getDefaultInstance()
-        localRepository = LocalRepository(realm)
+        localRepository = LocalRepository()
     }
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         when (intent.action) {
@@ -78,7 +85,7 @@ class BeaconBackgroundService : CBServiceListener, CBRangingListener, Service() 
                     5,
                     NotificationManager.buildForegroundNotification(this, intent.getStringExtra("time_execution"))
                 )
-                val pair = localRepository.getPairSession(true)
+                val pair = localRepository.getPairSession()
                 startTime = Date(System.currentTimeMillis())
                 endTime = if (pair.second == null) {
                     TimeUtils.convertStringToDate(pair.first!!.jamSelesai)!!
@@ -127,7 +134,6 @@ class BeaconBackgroundService : CBServiceListener, CBRangingListener, Service() 
             Log.i("XX", "POST_DELAYED_CALLED")
             PermissionManager.switchBluetoothState()
             cubeacon.stopRangingBeaconsInRegion(region)
-            localRepository.releaseSchedule(true)
             NotificationManager.showNotification(
                 this,
                 NotificationManager

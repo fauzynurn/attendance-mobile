@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:padding="20dp"
+              android:paddingBottom="0dp"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <RelativeLayout android:layout_marginBottom="18dp" android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+        <TextView android:layout_centerVertical="true" android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="Memulai kelas" android:textColor="@color/black" android:textSize="23sp"
+                  android:fontFamily="@font/productsansbold"/>
+        <ImageView android:layout_alignParentEnd="true" android:layout_width="32dp" android:layout_height="32dp"
+                   android:src="@drawable/ic_keyboard_arrow_down_black_24dp"/>
+    </RelativeLayout>
+    <RadioGroup
+            android:id="@+id/start_schedule_radio_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checkedButton="@+id/use_default"
+            android:orientation="vertical">
+        <RadioButton
+                android:id="@+id/use_default"
+                android:buttonTint="@color/blue"
+                android:textSize="18sp"
+                app:useMaterialThemeColors="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Gunakan jadwal yang sudah ada"/>
+        <RadioButton
+                android:id="@+id/use_modified"
+                android:textSize="18sp"
+                android:buttonTint="@color/blue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Gunakan jadwal yang dimodifikasi"/>
+    </RadioGroup>
+    <LinearLayout android:orientation="vertical" android:paddingStart="32dp" android:layout_width="match_parent"
+                  android:layout_height="wrap_content">
+        <RadioGroup
+                android:id="@+id/modified_filter_radio_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checkedButton="@+id/based_on_room"
+                android:orientation="horizontal">
+            <RadioButton
+                    android:enabled="false"
+                    android:id="@+id/based_on_room"
+                    android:buttonTint="@color/blue"
+                    android:textSize="18sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ruangan"/>
+            <RadioButton
+                    android:enabled="false"
+                    android:layout_marginStart="30dp"
+                    android:id="@+id/based_on_time"
+                    android:textSize="18sp"
+                    android:buttonTint="@color/blue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Waktu"/>
+        </RadioGroup>
+        <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
+            <Spinner
+                    android:id="@+id/start_room_dropdown"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"/>
+            <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/start_time_timepicker"
+                    android:visibility="gone"
+                    android:layout_marginTop="14dp"
+                    android:layout_width="match_parent"
+                    app:endIconMode="custom"
+                    android:focusable="false"
+                    app:endIconDrawable="@drawable/ic_date_range_black_24dp"
+                    android:hint="Pilih jam mulai"
+                    android:layout_marginBottom="14dp"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/start_time_timepicker_field"
+                        android:enabled="false"
+                        android:textSize="15sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+        </RelativeLayout>
+        <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
+            <TextView android:textColor="@color/grey" android:id="@+id/time_label" android:textSize="16sp" android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:text="Waktu kosong tersedia"/>
+            <TextView android:visibility="gone" android:textColor="@color/grey" android:id="@+id/room_label" android:textSize="16sp" android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:text="Ruangan kosong tersedia"/>
+        </RelativeLayout>
+        <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
+            <TextView android:textColor="@color/grey" android:layout_marginTop="23dp" android:layout_centerHorizontal="true"
+                      android:id="@+id/no_data_found_text" android:layout_width="wrap_content"
+                      android:layout_height="wrap_content" android:text="Tidak ada data"/>
+            <com.github.rahatarmanahmed.cpv.CircularProgressView
+                    android:id="@+id/loading_view"
+                    android:visibility="gone"
+                    android:layout_marginTop="13dp"
+                    android:layout_marginBottom="13dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_centerHorizontal="true"
+                    app:cpv_animAutostart="true"
+                    app:cpv_indeterminate="true"/>
+            <com.google.android.material.chip.ChipGroup
+                    android:visibility="gone"
+                    android:id="@+id/start_schedule_real_group_chips"
+                    android:layout_marginTop="13dp"
+                    android:layout_marginBottom="13dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:chipSpacingHorizontal="9dp"
+                    app:chipSpacingVertical="5dp"
+                    app:singleSelection="true"/>
+        </RelativeLayout>
+    </LinearLayout>
+    <com.google.android.material.button.MaterialButton
+            android:layout_marginTop="14dp"
+            app:cornerRadius="4dp"
+            style="@style/btnStyle"
+            android:textSize="18sp"
+            android:layout_gravity="center_horizontal"
+            android:fontFamily="@font/productsansbold"
+            android:id="@+id/start_class_btn"
+            android:layout_marginBottom="18dp"
+            android:textAllCaps="false"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="Mulai kelas"/>
+</LinearLayout>
