@@ -1,19 +1,19 @@
 package com.example.attendance_mobile.model.local
 
 import com.example.attendance_mobile.data.JadwalMhs
-import com.example.attendance_mobile.data.LocalAttendance
-import com.example.attendance_mobile.data.response.AttendanceResponse
+import com.example.attendance_mobile.data.KehadiranPerSesi
+import com.example.attendance_mobile.utils.Converters
 import com.example.attendance_mobile.utils.TimeUtils
 import io.realm.Realm
 
 
 class LocalRepository {
-    fun getPairSession(): Pair<LocalAttendance?, LocalAttendance?> {
+    fun getPairSession(): Pair<KehadiranPerSesi?, KehadiranPerSesi?> {
             val realm = Realm.getDefaultInstance()
-            val list = realm.where(LocalAttendance::class.java)
-                .equalTo("hasBeenExecuted", 0.toInt())
-                .limit(2)
+            val list = realm.where(KehadiranPerSesi::class.java)
+                .equalTo("status", false)
                 .sort("sesi")
+                .limit(2)
                 .findAll()?.toList()!!
         return when (list.size) {
             1 -> {
@@ -28,10 +28,10 @@ class LocalRepository {
         }
     }
 
-    fun getListOfUnsentAttendance(): List<LocalAttendance>? {
+    fun getListOfUnsentAttendance(): List<KehadiranPerSesi>? {
         val realm = Realm.getDefaultInstance()
-        return realm.where(LocalAttendance::class.java)
-            ?.equalTo("hasBeenExecuted", 0.toInt())
+        return realm.where(KehadiranPerSesi::class.java)
+            ?.equalTo("status", true)
             ?.sort("sesi")
             ?.findAll()?.toList()
     }
@@ -60,8 +60,8 @@ class LocalRepository {
 
     fun releaseAllExecutedItem() {
         val realm = Realm.getDefaultInstance()
-        val data = realm.where(LocalAttendance::class.java)
-            .equalTo("hasBeenExecuted", 1.toInt())
+        val data = realm.where(KehadiranPerSesi::class.java)
+            .equalTo("status", true)
             .findAll()
         realm.executeTransaction {
             data?.deleteAllFromRealm()
@@ -69,10 +69,10 @@ class LocalRepository {
     }
 
     //for testing purpose
-    fun getAllExecutedItem() : List<LocalAttendance>?{
+    fun getAllExecutedItem() : List<KehadiranPerSesi>?{
         val realm = Realm.getDefaultInstance()
-        return realm.where(LocalAttendance::class.java)
-            ?.equalTo("hasBeenExecuted", 1.toInt())
+        return realm.where(KehadiranPerSesi::class.java)
+            ?.equalTo("status", true)
             ?.sort("sesi")
             ?.findAll()?.toList()
     }
@@ -81,41 +81,29 @@ class LocalRepository {
 //        realm.executeTransaction { it.insert(attendance) }
 //    }
 
-    fun updateItemFromQueue(tgl : String) {
+    fun updateItemFromQueue() {
         val realm = Realm.getDefaultInstance()
-        val newAttendance = realm.where(LocalAttendance::class.java)
-            .equalTo("hasBeenExecuted", 0.toInt())
+        val newAttendance = realm.where(KehadiranPerSesi::class.java)
+            .equalTo("status", false)
             .sort("sesi")
             .findFirst()
         realm.executeTransaction {
-            newAttendance?.hasBeenExecuted = 1
-            newAttendance?.attendanceResponse?.tglKuliah = tgl
+            newAttendance?.status = true
         }
     }
 
-    fun saveBulkSchedule(nim : String, data: JadwalMhs) {
+    fun saveBulkSchedule(data: JadwalMhs) {
         val realm = Realm.getDefaultInstance()
         val kodeMatkul = data.kodeMatkul
-        val macAddress = data.ruangan.macAddress
-        val list = mutableListOf<LocalAttendance>()
+        val list = mutableListOf<KehadiranPerSesi>()
         val currentDate = TimeUtils.getCurrentDate()
-        for (subItem in data.jamMatkul) {
+        for (subItem in data.listSesi) {
             val scheduleDate = TimeUtils.convertStringToDate(subItem.jamSelesai)
             if (currentDate < scheduleDate)  {
-                val (sesi, jamMulai, jamSelesai) = subItem
-                val attendance = LocalAttendance(
-                    sesi,
-                    AttendanceResponse(
-                        nim,
-                        kodeMatkul,
-                        TimeUtils.getDateInString(TimeUtils.getCurrentDate(), "dd-MM-yyyy HH:mm")
-                    ),
-                    jamMulai,
-                    jamSelesai,
-                    0,
-                    macAddress
-                )
-                list.add(attendance)
+                subItem.tglKuliah = TimeUtils.getDateInString(TimeUtils.getCurrentDate(),"dd-MM-yyyy")
+                subItem.id = Converters.convertAttributesToSingleString(subItem.sesi.toString(),subItem.kodeMatkul,subItem.tglKuliah)
+                subItem.kodeMatkul = kodeMatkul
+                list.add(subItem)
             }
         }
         realm.executeTransaction {
@@ -126,7 +114,7 @@ class LocalRepository {
     fun deleteAllRows() {
         val realm = Realm.getDefaultInstance()
         realm.executeTransaction {
-            it.delete(LocalAttendance::class.java)
+            it.delete(KehadiranPerSesi::class.java)
         }
     }
 

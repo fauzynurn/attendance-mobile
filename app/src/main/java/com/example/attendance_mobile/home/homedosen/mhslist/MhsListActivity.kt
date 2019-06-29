@@ -47,4 +47,8 @@ class MhsListActivity : AppCompatActivity(), BaseView<MhsListPresenter>, MhsList
     override fun refreshList() {
         adapter.notifyDataSetChanged()
     }
+
+    override fun setSession(session : String){
+        sesi.text = "Sesi ke-$session"
+    }
 }

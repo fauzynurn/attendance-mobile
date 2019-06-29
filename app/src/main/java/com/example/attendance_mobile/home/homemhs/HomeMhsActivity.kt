@@ -30,6 +30,7 @@ class HomeMhsActivity : AppCompatActivity(),HomeMhsContract.ViewContract{
         presenter = HomeMhsPresenter(
             this,LocalRepository(),RemoteRepository(),SharedPreferenceHelper(this)
         )
+        presenter.setupHomescreen()
         presenter.doFetchSummaryData()
         presenter.doFetchScheduleList()
         attendance_summary_container.startShimmer()
@@ -62,10 +63,10 @@ class HomeMhsActivity : AppCompatActivity(),HomeMhsContract.ViewContract{
         finish()
     }
 
-    override fun onSummaryDataLoaded(data : HashMap<String,Int>) {
-        izin_num.text = data["izin"].toString()
-        sakit_num.text = data["sakit"].toString()
-        alpa_num.text = data["alpa"].toString()
+    override fun onSummaryDataLoaded(data : HashMap<String,String>) {
+        izin_num.text = data["izin"]
+        sakit_num.text = data["sakit"]
+        alpa_num.text = data["alpa"]
 
         attendance_summary_container.stopShimmer()
         summary_view.visibility = View.VISIBLE
@@ -117,5 +118,9 @@ class HomeMhsActivity : AppCompatActivity(),HomeMhsContract.ViewContract{
 
     override fun checkAllRequirement() : Boolean{
         return SystemRequirementManager.checkAllRequirementUsingDefaultDialog(this)
+    }
+
+    override fun setName(name : String){
+        nama.text = name
     }
 }

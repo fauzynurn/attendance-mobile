@@ -8,7 +8,6 @@ interface BeaconScanContract {
     interface ViewContract : BaseView<BeaconScanPresenter>{
         fun registerReceiver(beaconReceiver: BeaconService.BeaconReceiver<InteractorContract>)
         fun stopService()
-        fun startHome()
         fun startService(macAddress: String)
         fun startFingerprintActivity(macAddress: String)
         fun showDialog(title : String, message: String)
@@ -16,7 +15,5 @@ interface BeaconScanContract {
         fun startHomeMhs()
     }
 
-    interface InteractorContract : BaseBeaconInteractor{
-        fun onBeaconError(message : String)
-    }
+    interface InteractorContract : BaseBeaconInteractor
 }

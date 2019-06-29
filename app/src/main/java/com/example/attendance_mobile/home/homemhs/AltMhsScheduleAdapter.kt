@@ -18,6 +18,6 @@ class AltMhsScheduleAdapter(private val presenter: HomeMhsPresenter) : RecyclerV
     }
 
     override fun onBindViewHolder(holder: ScheduleMhsViewHolder, position: Int) {
-        presenter.onBindAltScheduleItem(position,holder)
+        presenter.onBindScheduleItem(position,holder,2)
     }
 }

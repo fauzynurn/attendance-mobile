@@ -31,7 +31,7 @@ class DetailPerSessionAdapter (private val presenter: DetailPerSessionPresenter)
             v.timeline.initLine(viewType)
         }
         override fun setSessionNum(session : Int) {
-            v.session_text.text = "KehadiranPerSesi ke-$session"
+            v.session_text.text = "Kehadiran ke-$session"
         }
 
         override fun setMarker(status: Int) {

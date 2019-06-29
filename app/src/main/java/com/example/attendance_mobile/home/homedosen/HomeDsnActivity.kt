@@ -2,14 +2,14 @@ package com.example.attendance_mobile.home.homedosen
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.attendance_mobile.R
 import com.example.attendance_mobile.beaconscanning.BeaconScanActivity
-import com.example.attendance_mobile.data.DsnSchedule
+import com.example.attendance_mobile.data.JadwalDsn
 import com.example.attendance_mobile.home.homedosen.jadwalpengganti.JwlPenggantiBottomSheet
+import com.example.attendance_mobile.home.homedosen.mhslist.MhsListActivity
 import com.example.attendance_mobile.home.homedosen.startclass.startschedule.StartScheduleBtmSheet
 import com.example.attendance_mobile.model.local.SharedPreferenceHelper
 import com.example.attendance_mobile.model.remote.RemoteRepository
@@ -27,9 +27,8 @@ class HomeDsnActivity : AppCompatActivity(), HomeDsnContract.ViewContract {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.homedsn_layout)
         presenter = HomeDsnPresenter(this, RemoteRepository(), SharedPreferenceHelper(this))
-        presenter.doFetchScheduleList()
-        dsn_schedule_list_container.startShimmer()
-        dsn_alt_schedule_list_container.startShimmer()
+        presenter.setupHomescreen()
+        reloadList()
         dsn_reguler_schedule_list.layoutManager = LinearLayoutManager(this)
         dsn_alt_schedule_list.layoutManager = LinearLayoutManager(this)
         regulerAdapter = RegulerDsnScheduleAdapter(presenter)
@@ -41,6 +40,16 @@ class HomeDsnActivity : AppCompatActivity(), HomeDsnContract.ViewContract {
         }
     }
 
+    fun reloadList(){
+        dsn_schedule_list_ph_container.visibility = View.VISIBLE
+        dsn_reguler_schedule_list.visibility = View.GONE
+        dsn_alt_schedule_list_ph_container.visibility = View.VISIBLE
+        dsn_alt_schedule_list.visibility = View.GONE
+        dsn_schedule_list_container.startShimmer()
+        dsn_alt_schedule_list_container.startShimmer()
+        presenter.doFetchScheduleList()
+    }
+
     override fun startBeaconActivity(kodeRuangan: String, macAddress: String) {
         val intent = Intent(this, BeaconScanActivity::class.java)
         intent.putExtra("kodeRuangan", kodeRuangan)
@@ -49,7 +58,7 @@ class HomeDsnActivity : AppCompatActivity(), HomeDsnContract.ViewContract {
         finish()
     }
 
-    override fun openStartScheduleBtmSheet(dsnSchedule: DsnSchedule) {
+    override fun openStartScheduleBtmSheet(dsnSchedule: JadwalDsn) {
         val bundle = Bundle()
         bundle.putSerializable("dsnSchedule",dsnSchedule)
         val startScheduleBottomSheet =
@@ -59,7 +68,10 @@ class HomeDsnActivity : AppCompatActivity(), HomeDsnContract.ViewContract {
     }
 
     override fun startMhsListActivity() {
-        Log.i("XX", "not implemented yet")
+        val intent = Intent(this, MhsListActivity::class.java)
+//        intent.putExtra("kodeRuangan", kodeRuangan)
+//        intent.putExtra("macAddress", macAddress)
+        startActivity(intent)
     }
 
     override fun onRegulerScheduleListLoaded() {
@@ -113,5 +125,9 @@ class HomeDsnActivity : AppCompatActivity(), HomeDsnContract.ViewContract {
         dsn_alt_schedule_list_container.stopShimmer()
         dsn_alt_schedule_list_ph_container.visibility = View.INVISIBLE
         dsn_no_alt_schedule_text.visibility = View.VISIBLE
+    }
+
+    override fun setName(name : String){
+        nama.text = name
     }
 }

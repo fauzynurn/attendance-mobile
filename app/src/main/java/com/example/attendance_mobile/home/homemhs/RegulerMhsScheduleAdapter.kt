@@ -18,6 +18,6 @@ class RegulerMhsScheduleAdapter(private val presenter: HomeMhsPresenter) : Recyc
     }
 
     override fun onBindViewHolder(holder: ScheduleMhsViewHolder, position: Int) {
-        presenter.onBindRegulerScheduleItem(position,holder)
+        presenter.onBindScheduleItem(position,holder,1)
     }
 }

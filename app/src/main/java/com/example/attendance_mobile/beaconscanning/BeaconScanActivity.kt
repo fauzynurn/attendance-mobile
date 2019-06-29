@@ -8,9 +8,6 @@ import com.example.attendance_mobile.R
 import com.example.attendance_mobile.fingerprintauth.FingerprintAuthActivity
 import com.example.attendance_mobile.home.homedosen.HomeDsnActivity
 import com.example.attendance_mobile.home.homemhs.HomeMhsActivity
-import com.example.attendance_mobile.model.local.LocalRepository
-import com.example.attendance_mobile.model.local.SharedPreferenceHelper
-import com.example.attendance_mobile.model.remote.RemoteRepository
 import com.example.attendance_mobile.model.service.BeaconService
 import com.example.attendance_mobile.utils.Constants
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -30,7 +27,7 @@ class BeaconScanActivity : AppCompatActivity(), BeaconScanContract.ViewContract{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.beacon_scanning_layout)
-        presenter = BeaconScanPresenter(RemoteRepository(), LocalRepository(),SharedPreferenceHelper(this),this)
+        presenter = BeaconScanPresenter(this)
         val intent = intent
         ruangan.text = intent.getStringExtra("kodeRuangan")
         presenter.startBeaconRanging(intent.getStringExtra("macAddress"))
@@ -52,10 +49,6 @@ class BeaconScanActivity : AppCompatActivity(), BeaconScanContract.ViewContract{
         intent.action = "START_RANGING"
         intent.putExtra("macAddress",macAddress)
         startService(intent)
-    }
-
-    override fun startHome(){
-        finish()
     }
 
     override fun startFingerprintActivity(macAddress: String) {

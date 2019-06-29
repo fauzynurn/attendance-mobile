@@ -25,7 +25,7 @@ class DetailPerSessionPresenter(
             }
             setJamMatkul(schedule.jamMulai.substring(0, schedule.jamMulai.length - 3),schedule.jamSelesai.substring(0, schedule.jamSelesai.length - 3))
         }
-        onAttendanceSessionListSuccess(schedule.jamMatkul)
+        onAttendanceSessionListSuccess(schedule.listSesi)
     }
 
     fun size(): Int {

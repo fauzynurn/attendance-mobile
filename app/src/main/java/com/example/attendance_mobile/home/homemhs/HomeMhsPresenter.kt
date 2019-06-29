@@ -19,6 +19,11 @@ class HomeMhsPresenter(
     private var regulerList: List<JadwalMhs> = emptyList()
     private var altList: List<JadwalMhs> = emptyList()
 
+    fun setupHomescreen(){
+        val name = sharedPreferenceHelper.getSharedPreferenceString("nama","")
+        view.setName(name!!)
+    }
+
     fun doFetchSummaryData() {
         val nim = sharedPreferenceHelper.getSharedPreferenceString("nim", "")
 //        localRepository.insert(
@@ -42,14 +47,18 @@ class HomeMhsPresenter(
 //                "D219",
 //                "C2:00:E2:00:00:6A",
 //                "07:05:00",
-//                arrayListOf(KehadiranPerSesi(1, "07:00:00", "07:50:00"), KehadiranPerSesi(2, "07:50:00", "08:40:00"))
+//                arrayListOf(Kehadiran(1, "07:00:00", "07:50:00"), Kehadiran(2, "07:50:00", "08:40:00"))
 //            )
 //        )
         remoteRepository.doFetchSummary(nim!!, this)
     }
 
-    fun onBindAltScheduleItem(position: Int, viewHolder: ScheduleMhsViewHolder){
-        val schedule: JadwalMhs = altList[position]
+    fun onBindScheduleItem(position: Int, viewHolder: ScheduleMhsViewHolder, type: Int) {
+        val schedule: JadwalMhs = if (type == 1) {
+            regulerList[position]
+        } else {
+            altList[position]
+        }
         var currentTime: Date = Calendar.getInstance().time
         val startTime: Date = TimeUtils.convertStringToDate(schedule.jamMulai)!!
         val startTimeByDosen: Date? = TimeUtils.convertStringToDate(schedule.jamMulaiOlehDosen)
@@ -66,26 +75,30 @@ class HomeMhsPresenter(
         when {
             currentTime >= startTime && currentTime < endTime -> {
                 viewHolder.apply {
-                    setStatusMatkul("Sedang berjalan")
-                    setStatusMatkulColor("#efdd3e")
+                    if(schedule.jamMulaiOlehDosen == "") setStatusMatkul("Belum dimulai") else setStatusMatkul("Sudah dimulai")
                     setPresenceButtonClickListener(schedule) {
                         currentTime = Calendar.getInstance().time
                         if (schedule.jamMulaiOlehDosen != "") {
-                            if (currentTime < TimeUtils.addMinutesToDate(Constants.LATE_LIMIT, startTimeByDosen!!) ||
-                                !schedule.jamMatkul.any{sesi -> sesi.status }
+                            if (currentTime < TimeUtils.addMinutesToDate(Constants.LATE_LIMIT, startTimeByDosen!!)
                             ) {
+                                if (!schedule.listSesi.any { sesi -> sesi.status }) {
+                                    if (view.checkAllRequirement()) {
+                                        //localRepository.insert(LocalAttendance("TEST1", 1, "KLKL", "XXXLL", "OPOP", "APAPA", 0, "MAC"))
+                                        localRepository.saveBulkSchedule(schedule)
+                                        view.startBeaconActivity(schedule.ruangan)
+                                    }
+                                } else {
+                                    view.startDetailPerSessionActivity(schedule)
+                                }
 //                            if (!permissionManager.isAutoTimeActive()) {
 //                                view.showDialog("Pencatatan Presensi Gagal", Constants.AUTO_TIME_DISABLED_MESSAGE)
 //                            } else {
-                                if (view.checkAllRequirement()) {
-                                    val nim = sharedPreferenceHelper.getSharedPreferenceString("nim","")!!
-                                    //localRepository.insert(LocalAttendance("TEST1", 1, "KLKL", "XXXLL", "OPOP", "APAPA", 0, "MAC"))
-                                    localRepository.saveBulkSchedule(nim,schedule)
-                                    view.startBeaconActivity(schedule.ruangan)
-                                }
                                 // }
                             } else {
-                                view.startDetailPerSessionActivity(schedule)
+                                view.showDialog(
+                                    "Waktu pencatatan kehadiran sudah habis",
+                                    "Silahkan menunggu sesi berikutnya"
+                                )
                             }
                         } else {
                             view.showDialog(
@@ -100,121 +113,7 @@ class HomeMhsPresenter(
                 viewHolder.apply {
                     setStatusMatkul("Sudah selesai")
                     setStatusMatkulColor("#ef463e")
-                    setPresenceButtonClickListener(schedule) {
-                        currentTime = Calendar.getInstance().time
-                        if (schedule.jamMulaiOlehDosen != "") {
-                            if (currentTime < TimeUtils.addMinutesToDate(Constants.LATE_LIMIT, startTimeByDosen!!) ||
-                                !schedule.jamMatkul[0].status
-                            ) {
-//                            if (!permissionManager.isAutoTimeActive()) {
-//                                view.showDialog("Pencatatan Presensi Gagal", Constants.AUTO_TIME_DISABLED_MESSAGE)
-//                            } else {
-                                if (view.checkAllRequirement()) {
-                                    val nim = sharedPreferenceHelper.getSharedPreferenceString("nim","")!!
-                                    //localRepository.insert(LocalAttendance("TEST1", 1, "KLKL", "XXXLL", "OPOP", "APAPA", 0, "MAC"))
-                                    localRepository.saveBulkSchedule(nim,schedule)
-                                    view.startBeaconActivity(schedule.ruangan)
-                                }
-                                // }
-                            } else {
-                                view.startDetailPerSessionActivity(schedule)
-                            }
-                        } else {
-                            view.showDialog(
-                                "Kelas belum dimulai oleh dosen",
-                                "Silahkan hubungi dosen yang bersangkutan untuk memulai kelas."
-                            )
-                        }
-                    }
-                }
-            }
-            currentTime < startTime -> {
-                viewHolder.apply {
-                    setStatusMatkul("Belum dimulai")
-                    setStatusMatkulColor("#bcbcbc")
                     hidePresenceButton()
-                }
-            }
-        }
-    }
-    fun onBindRegulerScheduleItem(position: Int, viewHolder: ScheduleMhsViewHolder) {
-        val schedule: JadwalMhs = regulerList[position]
-        var currentTime: Date = Calendar.getInstance().time
-        val startTime: Date = TimeUtils.convertStringToDate(schedule.jamMulai)!!
-        val startTimeByDosen: Date? = TimeUtils.convertStringToDate(schedule.jamMulaiOlehDosen)
-        val endTime: Date = TimeUtils.convertStringToDate(schedule.jamSelesai)!!
-
-        viewHolder.apply {
-            setStartTime(schedule.jamMulai.substring(0, schedule.jamMulai.length - 3))
-            setEndTime(schedule.jamSelesai.substring(0, schedule.jamSelesai.length - 3))
-            setNamaMatkul(schedule.namaMatkul)
-        }
-
-        if (schedule.jenisMatkul) viewHolder.setJenisMatkul(Constants.TEORI) else viewHolder.setJenisMatkul(Constants.PRAKTEK)
-
-        when {
-            currentTime >= startTime && currentTime < endTime -> {
-                viewHolder.apply {
-                    setStatusMatkul("Sedang berjalan")
-                    setStatusMatkulColor("#efdd3e")
-                    setPresenceButtonClickListener(schedule) {
-                        currentTime = Calendar.getInstance().time
-                        if (schedule.jamMulaiOlehDosen != "") {
-                            if (currentTime < TimeUtils.addMinutesToDate(Constants.LATE_LIMIT, startTimeByDosen!!) ||
-                                !schedule.jamMatkul.any{sesi -> sesi.status }
-                            ) {
-//                            if (!permissionManager.isAutoTimeActive()) {
-//                                view.showDialog("Pencatatan Presensi Gagal", Constants.AUTO_TIME_DISABLED_MESSAGE)
-//                            } else {
-                                if (view.checkAllRequirement()) {
-                                    val nim = sharedPreferenceHelper.getSharedPreferenceString("nim","")!!
-                                    //localRepository.insert(LocalAttendance("TEST1", 1, "KLKL", "XXXLL", "OPOP", "APAPA", 0, "MAC"))
-                                    localRepository.saveBulkSchedule(nim,schedule)
-                                    view.startBeaconActivity(schedule.ruangan)
-                                }
-                                // }
-                            } else {
-                                view.startDetailPerSessionActivity(schedule)
-                            }
-                        } else {
-                            view.showDialog(
-                                "Kelas belum dimulai oleh dosen",
-                                "Silahkan hubungi dosen yang bersangkutan untuk memulai kelas."
-                            )
-                        }
-                    }
-                }
-            }
-            currentTime > endTime -> {
-                viewHolder.apply {
-                    setStatusMatkul("Sudah selesai")
-                    setStatusMatkulColor("#ef463e")
-                    setPresenceButtonClickListener(schedule) {
-                        currentTime = Calendar.getInstance().time
-                        if (schedule.jamMulaiOlehDosen != "") {
-                            if (currentTime < TimeUtils.addMinutesToDate(Constants.LATE_LIMIT, startTimeByDosen!!) ||
-                                !schedule.jamMatkul[0].status
-                            ) {
-//                            if (!permissionManager.isAutoTimeActive()) {
-//                                view.showDialog("Pencatatan Presensi Gagal", Constants.AUTO_TIME_DISABLED_MESSAGE)
-//                            } else {
-                                if (view.checkAllRequirement()) {
-                                    val nim = sharedPreferenceHelper.getSharedPreferenceString("nim","")!!
-                                    //localRepository.insert(LocalAttendance("TEST1", 1, "KLKL", "XXXLL", "OPOP", "APAPA", 0, "MAC"))
-                                    localRepository.saveBulkSchedule(nim,schedule)
-                                    view.startBeaconActivity(schedule.ruangan)
-                                }
-                                // }
-                            } else {
-                                view.startDetailPerSessionActivity(schedule)
-                            }
-                        } else {
-                            view.showDialog(
-                                "Kelas belum dimulai oleh dosen",
-                                "Silahkan hubungi dosen yang bersangkutan untuk memulai kelas."
-                            )
-                        }
-                    }
                 }
             }
             currentTime < startTime -> {
@@ -231,7 +130,7 @@ class HomeMhsPresenter(
         return regulerList.size
     }
 
-    fun altSize() : Int {
+    fun altSize(): Int {
         return altList.size
     }
 
@@ -244,13 +143,14 @@ class HomeMhsPresenter(
 //    }
     fun doFetchScheduleList() {
         val kelas = sharedPreferenceHelper.getSharedPreferenceString("kelas", "")
-        remoteRepository.doFetchMhsScheduleList(kelas!!, "22-05-2019", this)
+        val nim = sharedPreferenceHelper.getSharedPreferenceString("nim", "")
+        remoteRepository.doFetchMhsScheduleList(nim!!, kelas!!, "27-06-2019", this)
     }
 
     override fun onScheduleListResult(data: ScheduleResponse<JadwalMhs>) {
         if (data.jadwalReguler.size == 0) {
             view.handleNoRegulerScheduleFound()
-        }else{
+        } else {
             regulerList = data.jadwalReguler
             view.apply {
                 refreshRegulerList()
@@ -258,9 +158,9 @@ class HomeMhsPresenter(
             }
         }
 
-        if(data.jadwalPengganti.size == 0) {
+        if (data.jadwalPengganti.size == 0) {
             view.handleNoAltScheduleFound()
-        }else{
+        } else {
             altList = data.jadwalPengganti
             view.apply {
                 refreshAltList()
@@ -269,7 +169,7 @@ class HomeMhsPresenter(
         }
     }
 
-    override fun onSummaryResult(summaryData: HashMap<String, Int>) {
+    override fun onSummaryResult(summaryData: HashMap<String, String>) {
         view.onSummaryDataLoaded(summaryData)
     }
 

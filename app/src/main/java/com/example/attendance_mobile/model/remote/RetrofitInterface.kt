@@ -1,13 +1,15 @@
 package com.example.fingerprintauth
 
-import com.example.attendance_mobile.data.DetailSummary
+import com.example.attendance_mobile.data.DetailAkumulasiKehadiran
+import com.example.attendance_mobile.data.JadwalDsn
 import com.example.attendance_mobile.data.JadwalMhs
-import com.example.attendance_mobile.data.response.AttendanceResponse
-import com.example.attendance_mobile.data.response.BaseResponse
-import com.example.attendance_mobile.data.response.ScheduleResponse
+import com.example.attendance_mobile.data.request.JwlPenggantiRequest
+import com.example.attendance_mobile.data.request.ListAttendanceRequest
+import com.example.attendance_mobile.data.response.*
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.POST
+import retrofit2.http.PUT
 
 
 interface RetrofitInterface {
@@ -23,15 +25,35 @@ interface RetrofitInterface {
     @POST("checkdsn")
     fun checkDsn(@Body body : HashMap<String,String>) : Call<BaseResponse>
 
-    @POST("getpresencesummary")
-    fun fetchSummary(@Body body : HashMap<String,String>) : Call<HashMap<String, Int>>
+    @POST("getketidakhadiran")
+    fun fetchSummary(@Body body : HashMap<String,String>) : Call<HashMap<String, String>>
 
-    @POST("getjadwal")
-    fun fetchScheduleList(@Body body : HashMap<String,String>) : Call<ScheduleResponse<JadwalMhs>>
+    @POST("getjadwalmhs")
+    fun fetchScheduleMhsList(@Body body : HashMap<String,String>) : Call<ScheduleResponse<JadwalMhs>>
 
-    @POST("getsummary")
-    fun fetchSummaryList(@Body body : HashMap<String,String>) : Call<ArrayList<DetailSummary>>
+    @POST("getjadwaldsn")
+    fun fetchScheduleDsnList(@Body body : HashMap<String,String>) : Call<ScheduleResponse<JadwalDsn>>
 
-    @POST("storeattendance")
-    fun storeCurrentAttendance(@Body body : List<AttendanceResponse>) : Call<BaseResponse>
+    @POST("getdaftarhadir")
+    fun fetchMhsList(@Body body : HashMap<String,String>):Call<MhsListResponse>
+    @POST("getkehadiran")
+    fun fetchSummaryList(@Body body : HashMap<String,String>) : Call<ArrayList<DetailAkumulasiKehadiran>>
+
+    @POST("mulaikbm")
+    fun startClass(@Body body : HashMap<String,String>) : Call<BaseResponse>
+
+    @PUT("catatkehadiran")
+    fun storeCurrentAttendance(@Body body : ListAttendanceRequest) : Call<BaseResponse>
+
+    @POST("dropdownmatkul")
+    fun fetchMatkulList(@Body body : HashMap<String,String>) : Call<MatkulListResponse>
+
+    @POST("dropdownjam")
+    fun fetchAvailableTime(@Body body : HashMap<String,String>) : Call<TimeAvailableResponse>
+
+    @POST("dropdownruangan")
+    fun fetchAvailableRoom(@Body body : HashMap<String,String>) : Call<RoomAvailableResponse>
+
+    @POST("buatjadwalpengganti")
+    fun requestJwlPengganti(@Body jwlPengganti : JwlPenggantiRequest) : Call<BaseResponse>
 }

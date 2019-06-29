@@ -18,6 +18,6 @@ class RegulerDsnScheduleAdapter(private val presenter: HomeDsnPresenter) : Recyc
     }
 
     override fun onBindViewHolder(holder: ScheduleDsnViewHolder, position: Int) {
-        presenter.onBindRegulerScheduleItem(position,holder)
+        presenter.onBindScheduleItem(position,holder,1)
     }
 }

@@ -8,7 +8,7 @@ interface FingerprintAuthContract {
         fun startHome()
         fun showDialog(title : String, message : String)
         fun showToast(message : String)
-        fun setAlarm(alarmMgr : AlarmManager, macAddress : String, timeExecution : Long)
+        fun setAlarm(alarmMgr : AlarmManager, macAddress : String)
     }
     interface InteractorContract{
         fun onAuthenticated()

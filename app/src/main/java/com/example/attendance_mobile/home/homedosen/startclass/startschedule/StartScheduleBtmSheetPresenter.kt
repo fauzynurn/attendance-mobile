@@ -1,52 +1,25 @@
 package com.example.attendance_mobile.home.homedosen.startclass.startschedule
 
 import android.util.Log
-import com.example.attendance_mobile.data.DsnSchedule
-import com.example.attendance_mobile.data.Ruangan
+import com.example.attendance_mobile.data.JadwalDsn
+import com.example.attendance_mobile.data.response.RoomAvailableResponse
 import com.example.attendance_mobile.model.remote.RemoteRepository
 import com.example.attendance_mobile.utils.TimeUtils
 
-class StartScheduleBtmSheetPresenter(var dsnSchedule: DsnSchedule, val view : StartScheduleBtmSheetContract.ViewContract,val remoteRepository: RemoteRepository) : StartScheduleBtmSheetContract.InteractorContract{
-    lateinit var roomList : List<Ruangan>
+class StartScheduleBtmSheetPresenter(var dsnSchedule: JadwalDsn, val view : StartScheduleBtmSheetContract.ViewContract, val remoteRepository: RemoteRepository) : StartScheduleBtmSheetContract.InteractorContract{
+    lateinit var roomList : List<String>
 
     fun doFetchRoomList(){
-        remoteRepository.doFetchAllRoom(this)
+        remoteRepository.doFetchStartClassRoomList(TimeUtils.getDateInString(TimeUtils.getCurrentDate(),"dd-MM-yyyy"),dsnSchedule.jamMulai,dsnSchedule.kelas,dsnSchedule.namaMatkul, dsnSchedule.jenisMatkul.toString(),this)
     }
 
-    fun doFetchRoomFromTime(jamMulai : String){
-        val currentDate = TimeUtils.getDateInString(TimeUtils.getCurrentDate(),"dd-MM-yyyy")
-        remoteRepository.doFetchRoomListFromTime(
-            currentDate,jamMulai,this
-        )
+    override fun onRoomListResult(data: RoomAvailableResponse) {
+        roomList = data.ruanganKosong
+        view.initRoomAdapter(data.ruanganKosong)
     }
 
-    fun doFetchTimeFromRoom(position : Int){
-        dsnSchedule.ruangan = roomList[position]
-        val currentDate = TimeUtils.getDateInString(TimeUtils.getCurrentDate(),"dd-MM-yyyy")
-        remoteRepository.doFetchTimeListFromRoom(currentDate,dsnSchedule.ruangan.kodeRuangan,this)
-    }
-
-    fun onRoomChipSelected(kodeRuangan : String){
-        val ruangan = roomList.find { item -> item.kodeRuangan == kodeRuangan }
-        if(ruangan != null) {
-            dsnSchedule.ruangan = ruangan
-        }
-    }
-
-    fun onTimeChipSelected(jamMulai: String){
-        dsnSchedule.jamMulai = jamMulai
-    }
-
-    override fun onRoomListResult(data: List<Ruangan>) {
-        roomList = data
-        view.initRoomAdapter(data.map { ruangan -> ruangan.kodeRuangan })
-    }
-    override fun onTimeListFromRoomResult(data: List<String>) {
-        view.onTimeDataReady(data)
-    }
-
-    override fun onRoomListFromTimeResult(data: List<Ruangan>) {
-        view.onRoomDataReady(data.map { ruangan -> ruangan.kodeRuangan })
+    fun onSelectRoomItem(position : Int){
+        dsnSchedule.ruangan.kodeRuangan = roomList[position]
     }
 
     override fun onFail(message: String) {

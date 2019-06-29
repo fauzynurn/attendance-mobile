@@ -78,7 +78,6 @@ class LoginActivity : AppCompatActivity(), LoginContract.ViewContract {
                 visibility = View.INVISIBLE
                 editText?.text?.clear()
             }
-            pass_field.editText?.text?.clear()
         }
         dosen_tab.setOnClickListener {
             currentTab = 2
@@ -90,13 +89,11 @@ class LoginActivity : AppCompatActivity(), LoginContract.ViewContract {
                 visibility = View.INVISIBLE
                 editText?.text?.clear()
             }
-            pass_field.editText?.text?.clear()
         }
         next_btn.setOnClickListener {
-            val passText : String = pass_field.editText?.text.toString()
             val nimText : String  = nim_field.editText?.text.toString()
             val kddsnText : String  = kddsn_field.editText?.text.toString()
-            presenter.handleLogin(currentTab,kddsnText,nimText,passText)
+            presenter.handleLogin(currentTab,kddsnText,nimText)
         }
     }
 

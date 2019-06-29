@@ -2,13 +2,49 @@ package com.example.attendance_mobile.home.homemhs.viewholder
 
 import android.graphics.Color
 import android.view.View
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.example.attendance_mobile.R
 import com.example.attendance_mobile.data.JadwalMhs
 import com.example.attendance_mobile.home.homemhs.HomeMhsContract
 import kotlinx.android.synthetic.main.schedule_mhs_item.view.*
 
 class ScheduleMhsViewHolder(private val v: View) : RecyclerView.ViewHolder(v), HomeMhsContract.ItemViewContract {
+    override fun highlightItem() {
+        v.apply {
+            item.apply {
+                setCardBackgroundColor(Color.parseColor("#3A25D4"))
+                strokeWidth = 0
+                strokeColor = Color.parseColor("#FFFFFF")
+            }
+            circle.backgroundTintList = resources.getColorStateList(R.color.white)
+            start_time.apply {
+                setTextColor(Color.parseColor("#FFFFFF"))
+                typeface = ResourcesCompat.getFont(v.context, R.font.productsansbold)
+            }
+            end_time.apply {
+                setTextColor(Color.parseColor("#FFFFFF"))
+                typeface = ResourcesCompat.getFont(v.context, R.font.productsansbold)
+            }
+            matkul.apply {
+                setTextColor(Color.parseColor("#FFFFFF"))
+                typeface = ResourcesCompat.getFont(v.context, R.font.productsansbold)
+            }
+            jenis_matkul.apply {
+                setTextColor(Color.parseColor("#FFFFFF"))
+                typeface = ResourcesCompat.getFont(v.context, R.font.productsansbold)
+            }
 
+            status_matkul.apply {
+                setTextColor(Color.parseColor("#FFFFFF"))
+                typeface = ResourcesCompat.getFont(v.context, R.font.productsansbold)
+            }
+            sd.apply {
+                setTextColor(Color.parseColor("#FFFFFF"))
+                typeface = ResourcesCompat.getFont(v.context, R.font.productsansbold)
+            }
+        }
+    }
         override fun setStartTime(startTime: String) {
             v.start_time.text = startTime
         }

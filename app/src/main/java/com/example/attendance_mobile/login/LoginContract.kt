@@ -16,7 +16,7 @@ interface LoginContract{
         fun onValidateMhsResult(response: BaseResponse?)
         fun onValidateDsnResult(response: BaseResponse?)
         fun onRegisterMhsResult(response: BaseResponse?)
-        fun onRegisterDsnResult()
+        fun onRegisterDsnResult(response : BaseResponse?)
         fun onFail(error : String?)
     }
 }

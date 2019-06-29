@@ -8,7 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.attendance_mobile.BaseView
 import com.example.attendance_mobile.R
-import com.example.attendance_mobile.data.DsnSchedule
+import com.example.attendance_mobile.data.JadwalDsn
+import com.example.attendance_mobile.home.homedosen.HomeDsnActivity
 import com.example.attendance_mobile.home.homedosen.bottomsheet.BaseBottomSheet
 import com.example.attendance_mobile.model.remote.RemoteRepository
 import com.example.attendance_mobile.model.service.BeaconService
@@ -20,16 +21,13 @@ class BeaconBtmSheet : BaseBottomSheet(),BaseView<BeaconBtmSheetPresenter>,Beaco
     lateinit var v: View
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         v = inflater.inflate(R.layout.beacon_btm_sheet_layout, container, false)
-        presenter = BeaconBtmSheetPresenter(this, RemoteRepository())
-//        presenter.startRanging(sharedPreferenceHelper.getSharedPreferenceString("macAddress","")!!)
-//        v.cancel_beacon_btn.setOnClickListener {
-//            presenter.cancelBeaconRanging()
-//        }
-        val obj = arguments?.getSerializable("dsnSchedule") as DsnSchedule
-        v.btm_sheet_ruangan.text = obj.ruangan.kodeRuangan
+        val obj = arguments?.getSerializable("dsnSchedule") as JadwalDsn
+        presenter = BeaconBtmSheetPresenter(this, RemoteRepository(), obj)
+        presenter.startRanging(obj.ruangan.macAddress)
         v.cancel_beacon_btn.setOnClickListener {
             presenter.cancelBeaconRanging()
         }
+        v.btm_sheet_ruangan.text = obj.ruangan.kodeRuangan
         return v
     }
 
@@ -46,6 +44,11 @@ class BeaconBtmSheet : BaseBottomSheet(),BaseView<BeaconBtmSheetPresenter>,Beaco
 
     override fun closeBtmSheet() {
         dismiss()
+    }
+
+    override fun reloadList() {
+        val activity = activity as HomeDsnActivity
+        activity.reloadList()
     }
 
     override fun registerReceiver(receiver: BeaconService.BeaconReceiver<BeaconBtmSheetContract.BeaconContract>) {

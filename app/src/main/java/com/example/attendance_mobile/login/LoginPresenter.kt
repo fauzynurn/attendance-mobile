@@ -40,13 +40,12 @@ class LoginPresenter(private val view: LoginContract.ViewContract,
 
     override fun onValidateMhsResult(response: BaseResponse?) {
         val imei : String
-        val pubKey: String
         when(response?.message){
             Constants.NOT_YET_ACTIVE_STATUS -> {
                 if(permissionManager.isPermissionGranted("android.permission.READ_PHONE_STATE")){
                     imei = permissionManager.getImei()
-                    pubKey = keyMgr.generateKeyPair()
-                    remoteRepository.doRegisterMhs(pubKey,nimTemp,imei,this)
+                    keyMgr.generateKey()
+                    remoteRepository.doRegisterMhs(nimTemp,imei,this)
                 }else{
                     view.showSnackBar(Constants.PERMISSION_DENIED)
                 }
@@ -55,39 +54,46 @@ class LoginPresenter(private val view: LoginContract.ViewContract,
                 sharedPreferenceHelper.apply {
                     setSharedPreferenceString("nim",nimTemp)
                     setSharedPreferenceInt("status",Constants.MAHASISWA)
-                    setSharedPreferenceString("kelas",response.data)
+                    setSharedPreferenceString("kelas",response.data.get("kelas")!!)
+                    setSharedPreferenceString("nama",response.data.get("nama")!!)
                 }
                 view.startHomeMhs()
             }
             Constants.STILL_ACTIVE_STATUS->{
+                view.toggleBtn()
                 view.showDialog(Constants.LOGIN_ERROR, Constants.STILL_ACTIVE_MESSAGE, false)
             }
             else -> {
+                view.toggleBtn()
                 view.showSnackBar(Constants.NOT_VERIFIED_MESSAGE)
             }
         }
     }
 
     override fun onValidateDsnResult(response: BaseResponse?) {
-        val imei : String
-        val pubKey: String
         when(response?.message){
             Constants.NOT_YET_ACTIVE_STATUS -> {
                 if(permissionManager.isPermissionGranted("android.permission.READ_PHONE_STATE")){
-                    imei = permissionManager.getImei()
-                    pubKey = keyMgr.generateKeyPair()
-                    remoteRepository.doRegisterDsn(pubKey,kddsnTemp,imei,this)
+                    val imei = permissionManager.getImei()
+                    remoteRepository.doRegisterDsn(kddsnTemp,imei,this)
                 }else{
                     view.showSnackBar(Constants.PERMISSION_DENIED)
                 }
             }
             Constants.IMEI_MATCH -> {
+                sharedPreferenceHelper.apply {
+                    setSharedPreferenceString("kddsn",kddsnTemp)
+                    setSharedPreferenceInt("status",Constants.DOSEN)
+                    setSharedPreferenceString("nama",response.data.get("nama")!!)
+                }
                 view.startHomeDsn()
             }
             Constants.STILL_ACTIVE_STATUS->{
+                view.toggleBtn()
                 view.showDialog(Constants.LOGIN_ERROR, Constants.STILL_ACTIVE_MESSAGE, false)
             }
             else -> {
+                view.toggleBtn()
                 view.showSnackBar(Constants.NOT_VERIFIED_MESSAGE)
             }
         }
@@ -97,34 +103,36 @@ class LoginPresenter(private val view: LoginContract.ViewContract,
         sharedPreferenceHelper.apply {
             setSharedPreferenceString("nim",nimTemp)
             setSharedPreferenceInt("status",Constants.MAHASISWA)
-            setSharedPreferenceString("kelas",response!!.message)
+            setSharedPreferenceString("kelas",response?.data?.get("kelas")!!)
+            setSharedPreferenceString("nama",response.data.get("nama")!!)
         }
         view.startHomeMhs()
     }
 
-    override fun onRegisterDsnResult() {
+    override fun onRegisterDsnResult(response : BaseResponse?) {
         sharedPreferenceHelper.apply {
             setSharedPreferenceString("kddsn",kddsnTemp)
             setSharedPreferenceInt("status",Constants.DOSEN)
+            setSharedPreferenceString("nama",response?.data?.get("nama")!!)
         }
         view.startHomeDsn()
     }
 
 
-    fun handleLogin(currentTab : Int , kddosen : String, nim : String, pass : String){
+    fun handleLogin(currentTab : Int , kddosen : String, nim : String){
         if(currentTab == 1) {
-            if (nim != "" && pass != "") {
+            if (nim != "") {
                 view.toggleBtn()
                 nimTemp = nim
-                remoteRepository.doValidateMhs(nim,pass,permissionManager.getImei(),this)
+                remoteRepository.doValidateMhs(nim,permissionManager.getImei(),this)
             } else {
                 view.showSnackBar(Constants.MHS_INVALID_FORM)
             }
         }else {
-            if(kddosen != "" && pass != ""){
+            if(kddosen != ""){
                 view.toggleBtn()
                 kddsnTemp = kddosen
-                remoteRepository.doValidateDosen(kddosen,pass,permissionManager.getImei(),this)
+                remoteRepository.doValidateDosen(kddosen,permissionManager.getImei(),this)
             }else{
                 view.showSnackBar(Constants.DOSEN_INVALID_FORM)
             }

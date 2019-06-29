@@ -18,6 +18,6 @@ class AltDsnScheduleAdapter(private val presenter: HomeDsnPresenter) : RecyclerV
     }
 
     override fun onBindViewHolder(holder: ScheduleDsnViewHolder, position: Int) {
-        presenter.onBindAltScheduleItem(position,holder)
+        presenter.onBindScheduleItem(position,holder,2)
     }
 }

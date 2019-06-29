@@ -23,9 +23,6 @@ class FingerprintHandler(private val interactor: FingerprintAuthContract.Interac
 
     fun startFingerprintService(fingerprintManager: FingerprintManager){
         val signatureObject = KeyManager.getSignatureObject()
-        if(signatureObject == null){
-            interactor
-        }
         val cryptoObject = FingerprintManager.CryptoObject(signatureObject)
         fingerprintManager.authenticate(cryptoObject, CancellationSignal(),0,this,null)
     }

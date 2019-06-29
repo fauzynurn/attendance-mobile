@@ -8,6 +8,7 @@ interface BeaconBtmSheetContract {
         fun stopService()
         fun startService(macAddress : String)
         fun closeBtmSheet()
+        fun reloadList()
         fun registerReceiver(receiver : BeaconService.BeaconReceiver<BeaconContract>)
     }
 

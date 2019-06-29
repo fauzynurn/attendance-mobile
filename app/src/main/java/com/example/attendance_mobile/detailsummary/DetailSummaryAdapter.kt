@@ -32,12 +32,12 @@ class DetailSummaryAdapter(private val presenter: DetailSummaryPresenter) : Recy
             v.detail_jenis_matkul.text = jenisMatkul
         }
 
-        override fun setJmlhHadir(jmlhHadir: Int) {
-            v.jumlah_hadir.text = jmlhHadir.toString()
+        override fun setJmlhHadir(jmlhHadir: String) {
+            v.jumlah_hadir.text = jmlhHadir
         }
 
-        override fun setJmlhTdkHadir(jmlhTdkHadir: Int) {
-            v.jumlah_tidak_hadir.text = jmlhTdkHadir.toString()
+        override fun setJmlhTdkHadir(jmlhTdkHadir: String) {
+            v.jumlah_tidak_hadir.text = jmlhTdkHadir
         }
 
     }

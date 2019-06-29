@@ -7,7 +7,11 @@ import android.content.Intent
 import android.os.Handler
 import android.os.IBinder
 import android.util.Log
+import com.example.attendance_mobile.data.KehadiranPerSesi
+import com.example.attendance_mobile.data.request.AttendanceRequest
+import com.example.attendance_mobile.data.request.ListAttendanceRequest
 import com.example.attendance_mobile.model.local.LocalRepository
+import com.example.attendance_mobile.model.local.SharedPreferenceHelper
 import com.example.attendance_mobile.model.manager.PermissionManager
 import com.example.attendance_mobile.model.remote.RemoteRepository
 import com.example.attendance_mobile.utils.Constants
@@ -15,7 +19,6 @@ import com.example.attendance_mobile.utils.NotificationManager
 import com.example.attendance_mobile.utils.TimeUtils
 import com.example.attendance_mobile.utils.WakeLocker
 import com.eyro.cubeacon.*
-import io.realm.Realm
 import java.util.*
 
 class BeaconBackgroundService : CBServiceListener, CBRangingListener, Service() {
@@ -26,9 +29,9 @@ class BeaconBackgroundService : CBServiceListener, CBRangingListener, Service() 
     private lateinit var localRepository: LocalRepository
     private lateinit var remoteRepository : RemoteRepository
     private lateinit var startTime: Date
+    private var session = ""
     private lateinit var endTime: Date
-    private lateinit var realm : Realm
-
+    private lateinit var pair : Pair<KehadiranPerSesi?, KehadiranPerSesi?>
     override fun didRangeBeaconsInRegion(p0: MutableList<CBBeacon>?, p1: CBRegion?) {
         if (p0!!.size > 0 && p0.any { it.macAddress == macAddress }) {
             PermissionManager.switchBluetoothState()
@@ -38,26 +41,39 @@ class BeaconBackgroundService : CBServiceListener, CBRangingListener, Service() 
             stopSelf()
             cubeacon.disconnect(this)
             stopForeground(STOP_FOREGROUND_REMOVE)
-
-            localRepository.updateItemFromQueue(TimeUtils.getDateInString(TimeUtils.getCurrentDate(), "dd-MM-yyyy HH:mm"))
+            //expected behaviour : sesi 5 dan 6
+            pair = localRepository.getPairSession()
+            // update sesi 5
+            localRepository.updateItemFromQueue()
             val unsentAttendance = localRepository.getListOfUnsentAttendance()
-            remoteRepository.doStoreCurrentAttendance(unsentAttendance!!.map { item -> item.attendanceResponse!! }
-            ) { localRepository.releaseAllExecutedItem() }
-
-            val pair = localRepository.getPairSession()
-            if(pair.first != null) {
+            val nim = SharedPreferenceHelper(this).getSharedPreferenceString("nim", "")!!
+            val list = unsentAttendance!!.map { item ->
+                AttendanceRequest(
+                    nim,
+                    item.sesi.toString(),
+                    TimeUtils.getDateInString(TimeUtils.getCurrentDate(), "27-06-2019")
+                )
+            }
+            remoteRepository.doStoreCurrentAttendance(
+                ListAttendanceRequest(list)
+            ) {
+                //expected behaviour : notif sukses UNTUK sesi 5
                 NotificationManager.showNotification(
                     this,
                     NotificationManager.buildNotification(
                         this, "Anda tercatat hadir",
-                            "Tercatat hadir pada sesi ke-${pair.first?.sesi}"
-                        ).build()
+                        "Tercatat hadir pada sesi ke-$session"
+                    ).build()
                 )
+                localRepository.releaseAllExecutedItem()
             }
+
+            //update data pair setelah releaseAllExecutedItem() dieksekusi
+            //ada dua kondisi : muncul satu (dlm kasus ini, ada satu), muncul dua ( kalo ada 4 sesi )
+            pair = localRepository.getPairSession()
             if (pair.first != null || pair.second != null) {
                 val newIntent = Intent(this, BeaconBackgroundService::class.java)
                 newIntent.apply {
-                    putExtra("time_execution", TimeUtils.getDiff(startTime, endTime).toString())
                     putExtra("macAddress", macAddress)
                     action = "INIT_RANGING"
                 }
@@ -73,28 +89,28 @@ class BeaconBackgroundService : CBServiceListener, CBRangingListener, Service() 
 
     override fun onCreate() {
         region = CBRegion("regiontest", UUID.fromString(Constants.REGION))
-        realm = Realm.getDefaultInstance()
         localRepository = LocalRepository()
+        remoteRepository = RemoteRepository()
     }
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         when (intent.action) {
             "INIT_RANGING" -> {
                 Log.i("xx", "INIT_RANGING_CALLED")
-                macAddress = intent.getStringExtra("macAddress")
+//                macAddress = intent.getStringExtra("macAddress")
+                //isi pair: sesi 5 dan 6
+                pair = localRepository.getPairSession()
+                startTime = Date(System.currentTimeMillis())
+                endTime = TimeUtils.convertStringToDate(pair.first!!.jamMulai)!!
                 startForeground(
                     5,
-                    NotificationManager.buildForegroundNotification(this, intent.getStringExtra("time_execution"))
+                    //time execution disini adalah waktu dimana pemindaian beacon untuk sesi 5 akan dilakukan
+                    NotificationManager.buildForegroundNotification(this, TimeUtils.getDiff(startTime,endTime).toString())
                 )
-                val pair = localRepository.getPairSession()
-                startTime = Date(System.currentTimeMillis())
-                endTime = if (pair.second == null) {
-                    TimeUtils.convertStringToDate(pair.first!!.jamSelesai)!!
-                } else {
-                    TimeUtils.convertStringToDate(pair.second!!.jamMulai)!!
-                }
+                // jangan di stop. entar notif foreground nya mati
                 val newIntent = Intent(this, BeaconBackgroundService::class.java)
                 newIntent.action = "START_RANGING"
                 newIntent.putExtra("macAddress", intent.getStringExtra("macAddress"))
+                session = pair.first?.sesi.toString()
                 val alarmIntent = newIntent.let { intent ->
                     PendingIntent.getService(this, 100, intent, 0)
                 }
@@ -143,17 +159,23 @@ class BeaconBackgroundService : CBServiceListener, CBRangingListener, Service() 
                         "Anda dianggap tidak hadir"
                     ).build()
             )
-            val newIntent = Intent(this, BeaconService::class.java)
-            newIntent.apply {
-                action = "INIT_RANGING"
-                putExtra("time_execution", TimeUtils.getDiff(startTime, endTime).toString())
-                putExtra("macAddress", macAddress)
+            //keep rescheduling alarm
+            val newIntent = Intent(this, BeaconBackgroundService::class.java)
+            newIntent.action = "START_RANGING"
+            newIntent.putExtra("macAddress", macAddress)
+            session = pair.first?.sesi.toString()
+            val alarmIntent = newIntent.let { intent ->
+                PendingIntent.getService(this, 100, intent, 0)
             }
-            startService(newIntent)
-            stopSelf()
+            val alarmMgr = PermissionManager(this).getAlarmSystemService()
+            alarmMgr.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                System.currentTimeMillis() + 60 * 1000,
+                alarmIntent
+            )
             cubeacon.disconnect(this)
             WakeLocker.release()
-        }, 25 * 1000)
+        }, 5 * 60 * 1000)
     }
 
 }

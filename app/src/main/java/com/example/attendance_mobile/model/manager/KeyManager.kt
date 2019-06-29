@@ -3,11 +3,10 @@ package com.example.attendance_mobile.model.manager
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyPermanentlyInvalidatedException
 import android.security.keystore.KeyProperties
-import com.example.attendance_mobile.utils.Base64
 import java.security.*
 
 class KeyManager{
-        fun generateKeyPair(): String {
+        fun generateKey() {
             try {
                 val mKeyPairGenerator: KeyPairGenerator =
                     KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA, "AndroidKeyStore")
@@ -22,8 +21,7 @@ class KeyManager{
                         .setUserAuthenticationRequired(true)
                         .build()
                 )
-                val keyPair: KeyPair = mKeyPairGenerator.generateKeyPair()
-                return Base64.encodeToString(keyPair.public.encoded, 0)
+                mKeyPairGenerator.generateKeyPair()
             } catch (e: InvalidAlgorithmParameterException) {
                 throw RuntimeException(e)
             }

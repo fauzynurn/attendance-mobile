@@ -13,10 +13,17 @@
                       android:layout_height="wrap_content">
             <ImageView android:id="@+id/mhs_list_back_btn" android:layout_width="wrap_content"
                        android:layout_height="wrap_content" android:src="@drawable/ic_keyboard_arrow_left_black_48dp"/>
+            <LinearLayout android:layout_marginStart="11dp" android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content">
             <TextView android:layout_gravity="center" android:layout_width="wrap_content"
                       android:layout_height="wrap_content" android:fontFamily="@font/productsansbold"
                       android:textColor="@color/black" android:text="Daftar Kehadiran Mahasiswa"
-                      android:textSize="21sp"/>
+                      android:textSize="19sp"/>
+                <TextView
+                        android:id="@+id/sesi" android:layout_width="wrap_content"
+                          android:layout_height="wrap_content" android:fontFamily="@font/productsansmedium"
+                          android:textColor="@color/darkerGrey" android:text="Sesi ke-"
+                          android:textSize="16sp"/>
+            </LinearLayout>
         </LinearLayout>
         <RelativeLayout
                 android:layout_gravity="center_horizontal"
