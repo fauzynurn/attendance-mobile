@@ -22,7 +22,7 @@ class DetailSummaryActivity : AppCompatActivity(),DetailSummaryContract.ViewCont
         detail_matkul_list.layoutManager = LinearLayoutManager(this)
         adapter = DetailSummaryAdapter(presenter)
         detail_matkul_list.adapter = adapter
-        detail_kehadiran_back_btn.setOnClickListener {
+        detail_summary_back_btn.setOnClickListener {
             finish()
         }
         presenter.doFetchDetailSummaryList()

@@ -1,15 +1,14 @@
 package com.example.attendance_mobile.model.remote
 
-import android.os.Handler
 import com.example.attendance_mobile.data.DetailAkumulasiKehadiran
 import com.example.attendance_mobile.data.JadwalDsn
 import com.example.attendance_mobile.data.JadwalMhs
-import com.example.attendance_mobile.data.Ruangan
 import com.example.attendance_mobile.data.request.JwlPenggantiRequest
 import com.example.attendance_mobile.data.request.ListAttendanceRequest
 import com.example.attendance_mobile.data.response.*
 import com.example.attendance_mobile.detailsummary.DetailSummaryContract
 import com.example.attendance_mobile.home.homedosen.HomeDsnContract
+import com.example.attendance_mobile.home.homedosen.jadwalpengganti.JwlPenggantiContract
 import com.example.attendance_mobile.home.homedosen.mhslist.MhsListContract
 import com.example.attendance_mobile.home.homedosen.startclass.startschedule.StartScheduleBtmSheetContract
 import com.example.attendance_mobile.home.homemhs.HomeMhsContract
@@ -30,7 +29,7 @@ class RemoteRepository {
     fun doValidateDosen(kddsn: String, imei: String, listener: LoginContract.InteractorContract) {
         val body: HashMap<String, String> = HashMap()
         body.run {
-            put("kddsn", kddsn)
+            put("kdDosen", kddsn)
             put("imei", imei)
         }
         val call: Call<BaseResponse> = retrofitService!!.checkDsn(body)
@@ -88,7 +87,7 @@ class RemoteRepository {
     fun doRegisterDsn(kddsn: String, imei: String, listener: LoginContract.InteractorContract) {
         val body: HashMap<String, String> = HashMap()
         body.run {
-            put("kddsn", kddsn)
+            put("kdDosen", kddsn)
             put("imei", imei)
         }
         val call: Call<BaseResponse> = retrofitService!!.registerDsn(body)
@@ -104,7 +103,7 @@ class RemoteRepository {
         })
     }
 
-    fun doFetchSummary(nim: String, listener: HomeMhsContract.InteractorContract) {
+    fun doFetchSummary(nim: String, tglSkrng: String, jamSkrng: String, listener: HomeMhsContract.InteractorContract) {
 //        val body: HashMap<String, String> = HashMap()
 //        Handler().postDelayed({
 //            body.run {
@@ -117,6 +116,8 @@ class RemoteRepository {
         val body: HashMap<String, String> = HashMap()
         body.run {
             put("nim", nim)
+            put("tgl",tglSkrng)
+            put("jamSkrng",jamSkrng)
         }
         val call: Call<HashMap<String, String>> = retrofitService!!.fetchSummary(body)
         call.enqueue(object : Callback<HashMap<String, String>> {
@@ -134,7 +135,7 @@ class RemoteRepository {
         })
     }
 
-    fun doFetchMhsScheduleList(nim: String, kelas: String, tgl: String, listener: HomeMhsContract.InteractorContract) {
+    fun doFetchMhsScheduleList(nim: String, tgl: String, listener: HomeMhsContract.InteractorContract) {
 //        val sd1 = JadwalMhs(
 //            "Pengolahan Citra Digital",
 //            true,
@@ -183,8 +184,8 @@ class RemoteRepository {
 //                        "D213",
 //                        "C2:00:E2:00:00:6A"
 //                    ),
-//                    "",
-//                    listOf(KehadiranPerSesi(id = "",sesi=1,jamMulai="08:40:00", jamSelesai="09:30:00", status=false,tglKuliah = ""),
+//                    "13:42:00",
+//                    listOf(KehadiranPerSesi(id = "",sesi=1,jamMulai="08:40:00", jamSelesai="09:30:00", status=true,tglKuliah = ""),
 //                        KehadiranPerSesi(id="",sesi=2, jamMulai="09:30:00", jamSelesai="10:20:00", status=false,tglKuliah = ""),
 //                        KehadiranPerSesi(id="",sesi=3, jamMulai="10:40:00", jamSelesai="11:30:00", status=false,tglKuliah=""))
 //                )
@@ -192,10 +193,9 @@ class RemoteRepository {
 //        )
 //        Handler().postDelayed({
 //            listener.onScheduleListResult(scheduleRes)
-//        }, 1000)
+//        }, 3000)
 
         val body: HashMap<String, String> = HashMap()
-        body["kdKelas"] = kelas
         body["tgl"] = tgl
         body["nim"] = nim
         val call: Call<ScheduleResponse<JadwalMhs>> = retrofitService!!.fetchScheduleMhsList(body)
@@ -206,7 +206,7 @@ class RemoteRepository {
 
             override fun onResponse(
                 call: Call<ScheduleResponse<JadwalMhs>>,
-                response: retrofit2.Response<ScheduleResponse<JadwalMhs>>
+                response: Response<ScheduleResponse<JadwalMhs>>
             ) {
                 listener.onScheduleListResult(response.body()!!)
             }
@@ -215,53 +215,53 @@ class RemoteRepository {
     }
 
     fun doFetchDsnScheduleList(kddosen: String, tgl: String, listener: HomeDsnContract.InteractorContract) {
-        val sd1 = JadwalDsn(
-            "Pengolahan Citra Digital",
-            true,
-            "16TKO6022",
-            "07:00:00",
-            "3B",
-            "",
-            "08:40:00",
-            Ruangan("D219", "C2:00:E2:00:00:6A")
-        )
-        val scheduleRes = ScheduleResponse(
-            arrayListOf(sd1), arrayListOf(
-                JadwalDsn(
-                    "Pengolahan Citra Digital",
-                    true,
-                    "16TKO6022",
-                    "13:40:00",
-                    "3A",
-                    "",
-                    "14:30:00",
-                    Ruangan("D213", "C2:00:E2:00:00:6A")
-                )
-            )
-        )
-        Handler().postDelayed({
-            listener.onScheduleListResult(scheduleRes)
-        }, 3000)
-//        val body: HashMap<String, String> = HashMap()
-//        body["kddsn"] = kddosen
-//        body["tgl"] = tgl
-//        val call: Call<ScheduleResponse<JadwalDsn>> = retrofitService!!.fetchScheduleDsnList(body)
-//        call.enqueue(object : Callback<ScheduleResponse<JadwalDsn>> {
-//            override fun onFailure(call: Call<ScheduleResponse<JadwalDsn>>, t: Throwable) {
-//                listener.onFail(t.message)
-//            }
-//
-//            override fun onResponse(
-//                call: Call<ScheduleResponse<JadwalDsn>>,
-//                response: Response<ScheduleResponse<JadwalDsn>>
-//            ) {
-//                listener.onScheduleListResult(response.body()!!)
-//            }
-//
-//        })
+//        val sd1 = JadwalDsn(
+//            "Pengolahan Citra Digital",
+//            true,
+//            "16TKO6022",
+//            "07:00:00",
+//            "3B",
+//            "07:12:00",
+//            "08:40:00",
+//            Ruangan("D219", "C2:00:E2:00:00:6A")
+//        )
+//        val scheduleRes = ScheduleResponse(
+//            arrayListOf(sd1), arrayListOf(
+//                JadwalDsn(
+//                    "Pengolahan Citra Digital",
+//                    true,
+//                    "16TKO6022",
+//                    "13:40:00",
+//                    "3A",
+//                    "",
+//                    "14:30:00",
+//                    Ruangan("D213", "C2:00:E2:00:00:6A")
+//                )
+//            )
+//        )
+//        Handler().postDelayed({
+//            listener.onScheduleListResult(scheduleRes)
+//        }, 3000)
+        val body: HashMap<String, String> = HashMap()
+        body["kdDosen"] = kddosen
+        body["tgl"] = tgl
+        val call: Call<ScheduleResponse<JadwalDsn>> = retrofitService!!.fetchScheduleDsnList(body)
+        call.enqueue(object : Callback<ScheduleResponse<JadwalDsn>> {
+            override fun onFailure(call: Call<ScheduleResponse<JadwalDsn>>, t: Throwable) {
+                listener.onFail(t.message)
+            }
+
+            override fun onResponse(
+                call: Call<ScheduleResponse<JadwalDsn>>,
+                response: Response<ScheduleResponse<JadwalDsn>>
+            ) {
+                listener.onScheduleListResult(response.body()!!)
+            }
+
+        })
     }
 
-    fun doFetchMatkulList(kddsn: String, listener: HomeDsnContract.InteractorContract) {
+    fun doFetchMatkulList(kddsn: String, listener: JwlPenggantiContract.InteractorContract) {
         val body: HashMap<String, String> = HashMap()
         body["kdDosen"] = kddsn
         val call: Call<MatkulListResponse> = retrofitService!!.fetchMatkulList(body)
@@ -270,7 +270,7 @@ class RemoteRepository {
                 listener.onFail(t.message)
             }
 
-            override fun onResponse(call: Call<MatkulListResponse>, response: retrofit2.Response<MatkulListResponse>) {
+            override fun onResponse(call: Call<MatkulListResponse>, response: Response<MatkulListResponse>) {
                 listener.onMatkulListResult(response.body()!!)
             }
 
@@ -278,11 +278,12 @@ class RemoteRepository {
     }
 
     fun doFetchSessionList(
-        tgl: String,
+        tglPengganti: String,
+        tglKuliah: String,
         kelas: String,
         namaMatkul: String,
         jenisMatkul: String,
-        listener: HomeDsnContract.InteractorContract
+        listener: JwlPenggantiContract.InteractorContract
     ) {
 //        val list = HashMap<Int, String>()
 ////        list.apply {
@@ -294,7 +295,8 @@ class RemoteRepository {
 ////            listener.onSessionListAvailableResult(list)
 ////        }, 2000)
         val body: HashMap<String, String> = HashMap()
-        body["tgl"] = tgl
+        body["tglPengganti"] = tglPengganti
+        body["tglKuliah"] = tglKuliah
         body["kdKelas"] = kelas
         body["namaMatkul"] = namaMatkul
         body["jenisMatkul"] = jenisMatkul
@@ -315,15 +317,17 @@ class RemoteRepository {
     }
 
     fun doFetchJwlPenggantiRoomList(
-        tgl: String,
+        tglPengganti: String,
+        tglKuliah : String,
         jamMulai: String,
         kodeKelas: String,
         namaMatkul: String,
         jenisMatkul: String,
-        listener: HomeDsnContract.InteractorContract
+        listener: JwlPenggantiContract.InteractorContract
     ) {
         val body: HashMap<String, String> = HashMap()
-        body["tgl"] = tgl
+        body["tglPengganti"] = tglPengganti
+        body["tglKuliah"] = tglKuliah
         body["jamMulai"] = jamMulai
         body["kdKelas"] = kodeKelas
         body["namaMatkul"] = namaMatkul
@@ -336,7 +340,7 @@ class RemoteRepository {
 
             override fun onResponse(
                 call: Call<RoomAvailableResponse>,
-                response: retrofit2.Response<RoomAvailableResponse>
+                response: Response<RoomAvailableResponse>
             ) {
                 listener.onRoomListAvailableResult(response.body()!!)
             }
@@ -345,7 +349,8 @@ class RemoteRepository {
     }
 
     fun doFetchStartClassRoomList(
-        tgl: String,
+        tglPengganti: String,
+        tglKuliah : String,
         jamMulai: String,
         kodeKelas: String,
         namaMatkul: String,
@@ -353,7 +358,8 @@ class RemoteRepository {
         listener: StartScheduleBtmSheetContract.InteractorContract
     ) {
         val body: HashMap<String, String> = HashMap()
-        body["tgl"] = tgl
+        body["tglPengganti"] = tglPengganti
+        body["tglKuliah"] = tglKuliah
         body["jamMulai"] = jamMulai
         body["kdKelas"] = kodeKelas
         body["namaMatkul"] = namaMatkul
@@ -374,7 +380,7 @@ class RemoteRepository {
         })
     }
 
-    fun doRequestJwlPengganti(jwlPengganti: JwlPenggantiRequest, listener: HomeDsnContract.InteractorContract) {
+    fun doRequestJwlPengganti(jwlPengganti: JwlPenggantiRequest, listener: JwlPenggantiContract.InteractorContract) {
         val call: Call<BaseResponse> = retrofitService!!.requestJwlPengganti(jwlPengganti)
         call.enqueue(object : Callback<BaseResponse> {
             override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
@@ -400,7 +406,7 @@ class RemoteRepository {
         })
     }
 
-    fun doFetchDetailSummary(nim: String, listener: DetailSummaryContract.InteractorContract) {
+    fun doFetchDetailSummary(nim: String, tglSkrng : String, jamSkrng : String, listener: DetailSummaryContract.InteractorContract) {
 //        val list = ArrayList<DetailAkumulasiKehadiran>()
 //        Handler().postDelayed({
 //            list.apply {
@@ -441,6 +447,8 @@ class RemoteRepository {
 //        }, 2000)
         val body: HashMap<String, String> = HashMap()
         body["nim"] = nim
+        body["tgl"] = tglSkrng
+        body["jamSkrng"] = jamSkrng
         val call: Call<ArrayList<DetailAkumulasiKehadiran>> = retrofitService!!.fetchSummaryList(body)
         call.enqueue(object : Callback<ArrayList<DetailAkumulasiKehadiran>> {
             override fun onFailure(call: Call<ArrayList<DetailAkumulasiKehadiran>>, t: Throwable) {
@@ -468,26 +476,20 @@ class RemoteRepository {
     fun doFetchMhsList(
         tgl: String,
         jamSkrng: String,
-        jamMulai: String,
         kdKelas: String,
-        jenisMatkul: String,
-        kodeMatkul: String,
         listener: MhsListContract.InteractorContract
     ) {
         val body: HashMap<String, String> = HashMap()
         body["tgl"] = tgl
         body["jamSkrng"] = jamSkrng
-        body["jamMulai"] = jamMulai
         body["kdKelas"] = kdKelas
-        body["jenisMatkul"] = jenisMatkul
-        body["kodeMatkul"] = kodeMatkul
         val call: Call<MhsListResponse> = retrofitService!!.fetchMhsList(body)
         call.enqueue(object : Callback<MhsListResponse> {
             override fun onFailure(call: Call<MhsListResponse>, t: Throwable) {
                 listener.onFail(t.message!!)
             }
 
-            override fun onResponse(call: Call<MhsListResponse>, response: retrofit2.Response<MhsListResponse>) {
+            override fun onResponse(call: Call<MhsListResponse>, response: Response<MhsListResponse>) {
                 listener.onMhsListResult(response.body()!!)
             }
 
@@ -560,23 +562,62 @@ class RemoteRepository {
         kodeMatkul: String,
         kodeKelas: String,
         jenisMatkul: Boolean,
-        kodeRuangan : String
+        kodeRuangan : String,
+        onSuccess: (BaseResponse) -> Unit,
+        onFail: (String) -> Unit
     ) {
         val body: HashMap<String, String> = HashMap()
         body["tgl"] = tgl
-        body["jamMulai"] = jamMulaiOlehDosen
-        body["kodeMatkul"] = kodeMatkul
-        body["kodeKelas"] = kodeKelas
+        body["jamSkrng"] = jamMulaiOlehDosen
+        body["kdMatkul"] = kodeMatkul
+        body["kdKelas"] = kodeKelas
         body["jenisMatkul"] = jenisMatkul.toString()
-        body["kodeRuangan"] = kodeRuangan
+        body["kdRuangan"] = kodeRuangan
         val call: Call<BaseResponse> = retrofitService!!.startClass(body)
         call.enqueue(object : Callback<BaseResponse> {
             override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
-
+                onFail(t.message!!)
             }
 
-            override fun onResponse(call: Call<BaseResponse>, response: retrofit2.Response<BaseResponse>) {
+            override fun onResponse(call: Call<BaseResponse>, response: Response<BaseResponse>) {
+                onSuccess(response.body()!!)
+            }
 
+        })
+    }
+
+    fun doFetchJwlPenggantiList(kddsn : String, tglSkrng : String, jamSkrng : String, listener : JwlPenggantiContract.InteractorContract){
+        val body: HashMap<String, String> = HashMap()
+        body["kdDosen"] = kddsn
+        body["tgl"] = tglSkrng
+        body["jamSkrng"] = jamSkrng
+        val call: Call<JwlPenggantiListResponse> = retrofitService!!.requestJwlPenggantiList(body)
+        call.enqueue(object : Callback<JwlPenggantiListResponse> {
+            override fun onFailure(call: Call<JwlPenggantiListResponse>, t: Throwable) {
+                listener.onFail(t.message)
+            }
+
+            override fun onResponse(call: Call<JwlPenggantiListResponse>, response: Response<JwlPenggantiListResponse>) {
+                listener.onJwlPenggantiListResult(response.body()!!)
+            }
+
+        })
+    }
+
+    fun doRequestDeleteJwlPengganti(kdkelas : String, jenisMatkul : String, namaMatkul : String, tglKuliah : String, onSuccess: (BaseResponse) -> Unit, onFail: (String) -> Unit){
+        val body: HashMap<String, String> = HashMap()
+        body["kdKelas"] = kdkelas
+        body["jenisMatkul"] = jenisMatkul
+        body["namaMatkul"] = namaMatkul
+        body["tglKuliah"] = tglKuliah
+        val call: Call<BaseResponse> = retrofitService!!.deleteJwlPengganti(body)
+        call.enqueue(object : Callback<BaseResponse> {
+            override fun onFailure(call: Call<BaseResponse>, t: Throwable) {
+                onFail(t.message!!)
+            }
+
+            override fun onResponse(call: Call<BaseResponse>, response: Response<BaseResponse>) {
+                onSuccess(response.body()!!)
             }
 
         })

@@ -9,9 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import com.example.attendance_mobile.R
-import com.example.attendance_mobile.home.homedosen.HomeDsnActivity
-import com.example.attendance_mobile.home.homedosen.HomeDsnContract
-import com.example.attendance_mobile.home.homedosen.HomeDsnPresenter
 import com.example.attendance_mobile.home.homedosen.bottomsheet.BaseBottomSheet
 import com.google.android.material.chip.Chip
 import kotlinx.android.synthetic.main.jwl_pengganti_bottom_sheet_layout.view.*
@@ -19,8 +16,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class JwlPenggantiBottomSheet(val presenter: HomeDsnPresenter) : BaseBottomSheet(),
-    HomeDsnContract.JwlPenggantiBtmSheetViewContract {
+class JwlPenggantiBottomSheet(val presenter: JwlPenggantiPresenter) : BaseBottomSheet(),
+    JwlPenggantiContract.JwlPenggantiBtmSheetViewContract {
     lateinit var v: View
     lateinit var matkulAdapter: ArrayAdapter<String>
     lateinit var kelasAdapter: ArrayAdapter<String>
@@ -105,7 +102,7 @@ class JwlPenggantiBottomSheet(val presenter: HomeDsnPresenter) : BaseBottomSheet
             setTextColor(resources.getColor(R.color.white))
             setOnClickListener {
                 dismiss()
-                val activity = activity as HomeDsnActivity
+                val activity = activity as JwlPenggantiActivity
                 activity.reloadList()
                 presenter.onConfirmJwlPengganti()
             }

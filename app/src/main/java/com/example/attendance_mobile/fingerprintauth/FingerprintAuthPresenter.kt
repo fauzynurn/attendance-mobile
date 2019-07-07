@@ -8,6 +8,7 @@ import com.example.attendance_mobile.model.manager.FingerprintHandler
 import com.example.attendance_mobile.model.manager.PermissionManager
 import com.example.attendance_mobile.model.remote.RemoteRepository
 import com.example.attendance_mobile.utils.Constants
+import com.example.attendance_mobile.utils.TimeUtils
 
 class FingerprintAuthPresenter(
     val remoteRepository: RemoteRepository,
@@ -28,7 +29,7 @@ class FingerprintAuthPresenter(
         val list = localRepository.getListOfUnsentAttendance()
         val nim = sharedPreferenceHelper.getSharedPreferenceString("nim", "")
         val attList = list?.map { item ->
-            AttendanceRequest(nim!!, item.sesi.toString(), "27-06-2019")
+            AttendanceRequest(nim!!, item.sesi.toString(), TimeUtils.getDateInString(TimeUtils.getCurrentDate(), "dd-MM-yyyy"))
         }
 
         remoteRepository.doStoreCurrentAttendance(

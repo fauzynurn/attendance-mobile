@@ -17,11 +17,14 @@ class MhsListActivity : AppCompatActivity(), BaseView<MhsListPresenter>, MhsList
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.mhs_list_layout)
-        presenter = MhsListPresenter(this, RemoteRepository())
+        presenter = MhsListPresenter(this, RemoteRepository(), intent.getStringExtra("kelas"))
         adapter = MhsListAdapter(presenter)
         mhs_list.adapter = adapter
         mhs_list.layoutManager = LinearLayoutManager(this)
         presenter.doFetchMhsList()
+        mhs_list_back_btn.setOnClickListener {
+            onBackPressed()
+        }
     }
 
     override fun setJmlhHadir(jml: Int) {

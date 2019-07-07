@@ -27,4 +27,10 @@ class ExampleUnitTest {
         }
         assertEquals("PRESENT",jsonObject.getString("status"))
     }
+    
+    @Test
+    fun getTimeFromDate_test(){
+        val timeString = TimeUtils.getDateInString(TimeUtils.getCurrentDate(),"HH:mm")
+        assertEquals("13:15",timeString)
+    }
 }

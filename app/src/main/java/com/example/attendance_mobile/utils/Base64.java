@@ -124,7 +124,7 @@ public class Base64 {
         }
 
         // Need to shorten the array, so allocate a new one of the
-        // right regulerSize and copy.
+        // right scheduleSize and copy.
         byte[] temp = new byte[decoder.op];
         System.arraycopy(decoder.output, 0, temp, 0, decoder.op);
         return temp;

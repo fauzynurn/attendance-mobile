@@ -1,51 +1,11 @@
 package com.example.attendance_mobile.home.homedosen.viewholder
 
-import android.graphics.Color
 import android.view.View
-import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.example.attendance_mobile.R
-import com.example.attendance_mobile.data.JadwalDsn
 import com.example.attendance_mobile.home.homedosen.HomeDsnContract
-import kotlinx.android.synthetic.main.schedule_mhs_item.view.*
+import kotlinx.android.synthetic.main.schedule_dsn_item.view.*
 
 class ScheduleDsnViewHolder(private val v: View) : RecyclerView.ViewHolder(v), HomeDsnContract.ItemViewContract {
-
-    override fun highlightItem() {
-        v.apply {
-            item.apply {
-                setCardBackgroundColor(Color.parseColor("#3A25D4"))
-                strokeWidth = 0
-                strokeColor = Color.parseColor("#FFFFFF")
-            }
-            circle.backgroundTintList = resources.getColorStateList(R.color.white)
-            start_time.apply {
-                setTextColor(Color.parseColor("#FFFFFF"))
-                typeface = ResourcesCompat.getFont(v.context, R.font.productsansbold)
-            }
-            end_time.apply {
-                setTextColor(Color.parseColor("#FFFFFF"))
-                typeface = ResourcesCompat.getFont(v.context, R.font.productsansbold)
-            }
-            matkul.apply {
-                setTextColor(Color.parseColor("#FFFFFF"))
-                typeface = ResourcesCompat.getFont(v.context, R.font.productsansbold)
-            }
-            jenis_matkul.apply {
-                setTextColor(Color.parseColor("#FFFFFF"))
-                typeface = ResourcesCompat.getFont(v.context, R.font.productsansbold)
-            }
-
-            status_matkul.apply {
-                setTextColor(Color.parseColor("#FFFFFF"))
-                typeface = ResourcesCompat.getFont(v.context, R.font.productsansbold)
-            }
-            sd.apply {
-                setTextColor(Color.parseColor("#FFFFFF"))
-                typeface = ResourcesCompat.getFont(v.context, R.font.productsansbold)
-            }
-        }
-    }
 
     override fun setStartTime(startTime: String) {
         v.start_time.text = startTime
@@ -63,19 +23,7 @@ class ScheduleDsnViewHolder(private val v: View) : RecyclerView.ViewHolder(v), H
         v.jenis_matkul.text = jenisMatkul
     }
 
-    override fun setStatusMatkul(statusMatkul: String) {
-        v.status_matkul.text = statusMatkul
-    }
-
-    override fun setStatusMatkulColor(colorCode: String) {
-        v.status_matkul.setTextColor(Color.parseColor(colorCode))
-    }
-
-    override fun setArrowButtonClickListener(item: JadwalDsn, clickListener: (JadwalDsn) -> Unit) {
-        v.presence_button.setOnClickListener { clickListener(item) }
-    }
-
-    override fun hidePresenceButton() {
-        v.presence_button.visibility = View.GONE
+    override fun setKelas(kelas : String){
+        v.kelas.text = kelas
     }
 }

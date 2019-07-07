@@ -35,6 +35,7 @@
         <activity android:name=".detailsummary.DetailSummaryActivity"/>
         <activity android:name=".detailpersession.DetailPerSessionActivity"/>
         <activity android:name=".home.homedosen.mhslist.MhsListActivity"/>
+        <activity android:name=".home.homedosen.jadwalpengganti.JwlPenggantiActivity"/>
         <service android:name=".model.service.BeaconService" android:enabled="true"/>
         <service android:name=".model.service.BeaconBackgroundService" android:enabled="true"/>
         <receiver android:name=".receiver.ConnectivityChangeReceiver">

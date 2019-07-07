@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:padding="16dp"
               android:layout_width="match_parent"
               android:layout_height="wrap_content">
     <TextView
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:layout_weight="1"
+            android:layout_marginEnd="10dp"
             android:id="@+id/nama_mhs" android:layout_width="wrap_content" android:layout_height="wrap_content"
-              android:text="nama_mahasiswa" android:textSize="19sp" android:fontFamily="@font/productsansmedium"
-              android:textColor="@color/black"/>
+            android:text="nama_mahasiswa" android:textSize="16sp" android:fontFamily="@font/productsansmedium"
+            android:textColor="@color/black"/>
     <TextView
             android:id="@+id/status_hadir"
-            android:layout_alignParentEnd="true" android:layout_width="wrap_content" android:layout_height="wrap_content"
-              android:text="status_hadir" android:textSize="15sp" android:fontFamily="@font/productsansmedium"
-              android:textColor="@color/black"/>
-</RelativeLayout>
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="status_hadir" android:textSize="15sp" android:fontFamily="@font/productsansmedium"
+            android:textColor="@color/black"/>
+</LinearLayout>

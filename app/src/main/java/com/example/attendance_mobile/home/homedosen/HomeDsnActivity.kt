@@ -1,6 +1,7 @@
 package com.example.attendance_mobile.home.homedosen
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -8,7 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.attendance_mobile.R
 import com.example.attendance_mobile.beaconscanning.BeaconScanActivity
 import com.example.attendance_mobile.data.JadwalDsn
-import com.example.attendance_mobile.home.homedosen.jadwalpengganti.JwlPenggantiBottomSheet
+import com.example.attendance_mobile.home.homedosen.jadwalpengganti.JwlPenggantiActivity
 import com.example.attendance_mobile.home.homedosen.mhslist.MhsListActivity
 import com.example.attendance_mobile.home.homedosen.startclass.startschedule.StartScheduleBtmSheet
 import com.example.attendance_mobile.model.local.SharedPreferenceHelper
@@ -21,32 +22,38 @@ import kotlinx.android.synthetic.main.homedsn_layout.*
 
 class HomeDsnActivity : AppCompatActivity(), HomeDsnContract.ViewContract {
     override lateinit var presenter: HomeDsnPresenter
-    private lateinit var regulerAdapter: RegulerDsnScheduleAdapter
-    private lateinit var altAdapter: AltDsnScheduleAdapter
+    private lateinit var scheduleAdapter: DsnScheduleAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.homedsn_layout)
+        window.statusBarColor = Color.parseColor("#1659ce")
+        window.decorView.systemUiVisibility = 0
         presenter = HomeDsnPresenter(this, RemoteRepository(), SharedPreferenceHelper(this))
         presenter.setupHomescreen()
         reloadList()
-        dsn_reguler_schedule_list.layoutManager = LinearLayoutManager(this)
-        dsn_alt_schedule_list.layoutManager = LinearLayoutManager(this)
-        regulerAdapter = RegulerDsnScheduleAdapter(presenter)
-        altAdapter = AltDsnScheduleAdapter(presenter)
-        dsn_reguler_schedule_list.adapter = regulerAdapter
-        dsn_alt_schedule_list.adapter = altAdapter
+        schedule_list.layoutManager = LinearLayoutManager(this)
+        scheduleAdapter = DsnScheduleAdapter(presenter)
+        schedule_list.adapter = scheduleAdapter
         jwl_pengganti_btn.setOnClickListener {
-            startJwlPenggantiBtmSheet()
+            startJwlPenggantiActivity()
         }
     }
 
+    fun startJwlPenggantiActivity(){
+        val intent = Intent(this, JwlPenggantiActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+
     fun reloadList(){
-        dsn_schedule_list_ph_container.visibility = View.VISIBLE
-        dsn_reguler_schedule_list.visibility = View.GONE
-        dsn_alt_schedule_list_ph_container.visibility = View.VISIBLE
-        dsn_alt_schedule_list.visibility = View.GONE
-        dsn_schedule_list_container.startShimmer()
-        dsn_alt_schedule_list_container.startShimmer()
+        no_ongoing_schedule_text.visibility = View.GONE
+        no_dsn_schedule_text.visibility = View.GONE
+        ongoing_dsn_schedule_ph_container.visibility = View.VISIBLE
+        schedule_list_ph_container.visibility = View.VISIBLE
+        schedule_list.visibility = View.GONE
+        ongoing_dsn_schedule.visibility = View.GONE
+        schedule_list_container.startShimmer()
+        ongoing_dsn_schedule_container.startShimmer()
         presenter.doFetchScheduleList()
     }
 
@@ -67,23 +74,23 @@ class HomeDsnActivity : AppCompatActivity(), HomeDsnContract.ViewContract {
         startScheduleBottomSheet.show(supportFragmentManager, "start_schedule_btm_sheet")
     }
 
-    override fun startMhsListActivity() {
+    override fun startMhsListActivity(kelas : String) {
         val intent = Intent(this, MhsListActivity::class.java)
-//        intent.putExtra("kodeRuangan", kodeRuangan)
+        intent.putExtra("kelas", kelas)
 //        intent.putExtra("macAddress", macAddress)
         startActivity(intent)
     }
 
-    override fun onRegulerScheduleListLoaded() {
-        dsn_schedule_list_container.stopShimmer()
-        dsn_schedule_list_ph_container.visibility = View.GONE
-        dsn_reguler_schedule_list.visibility = View.VISIBLE
+    override fun onDsnScheduleListLoaded() {
+        schedule_list_container.stopShimmer()
+        schedule_list_ph_container.visibility = View.GONE
+        schedule_list.visibility = View.VISIBLE
     }
 
-    override fun onAltScheduleListLoaded() {
-        dsn_alt_schedule_list_container.stopShimmer()
-        dsn_alt_schedule_list_ph_container.visibility = View.GONE
-        dsn_alt_schedule_list.visibility = View.VISIBLE
+    override fun onOngoingDsnScheduleLoaded(){
+        ongoing_dsn_schedule_container.stopShimmer()
+        ongoing_dsn_schedule_ph_container.visibility = View.GONE
+        ongoing_dsn_schedule.visibility = View.VISIBLE
     }
 
     override fun showSnackBar(message: String) {
@@ -98,36 +105,51 @@ class HomeDsnActivity : AppCompatActivity(), HomeDsnContract.ViewContract {
             .show()
     }
 
-    override fun startJwlPenggantiBtmSheet() {
-        JwlPenggantiBottomSheet(presenter)
-            .show(supportFragmentManager, "jwl_pengganti_btm_sheet")
+    override fun refreshScheduleList() {
+        scheduleAdapter.notifyDataSetChanged()
     }
 
-    override fun refreshRegulerList() {
-        regulerAdapter.notifyDataSetChanged()
-    }
-
-    override fun refreshAltList() {
-        altAdapter.notifyDataSetChanged()
-    }
 
     override fun checkAllRequirement(): Boolean {
         return SystemRequirementManager.checkAllRequirementUsingDefaultDialog(this)
     }
 
-    override fun handleNoRegulerScheduleFound() {
-        dsn_schedule_list_container.stopShimmer()
-        dsn_schedule_list_ph_container.visibility = View.INVISIBLE
-        dsn_no_reguler_schedule_text.visibility = View.VISIBLE
+    override fun handleNoDsnScheduleFound() {
+        schedule_list_container.stopShimmer()
+        schedule_list_ph_container.visibility = View.INVISIBLE
+        no_dsn_schedule_text.visibility = View.VISIBLE
     }
 
-    override fun handleNoAltScheduleFound() {
-        dsn_alt_schedule_list_container.stopShimmer()
-        dsn_alt_schedule_list_ph_container.visibility = View.INVISIBLE
-        dsn_no_alt_schedule_text.visibility = View.VISIBLE
+    override fun handleNoOngoingDsnScheduleFound() {
+        ongoing_dsn_schedule_container.stopShimmer()
+        ongoing_dsn_schedule_ph_container.visibility = View.GONE
+        no_ongoing_schedule_text.visibility = View.VISIBLE
     }
 
     override fun setName(name : String){
         nama.text = name
+    }
+
+    override fun setOngoingMatkulName(name: String) {
+        mata_kuliah.text = name
+    }
+
+    override fun setOngoingJenisMatkul(jenisMatkul: String) {
+        jenis_matkul.text = jenisMatkul
+    }
+
+    override fun setOngoingTime(startTime: String) {
+        jam.text = startTime
+    }
+    override fun setBtnLabel(label: String) {
+        presence_button.text = label
+    }
+
+    override fun setOngoingKelas(kelasString: String) {
+        kelas.text = kelasString
+    }
+
+    override fun setPresenceButtonClickListener(item: JadwalDsn, clickListener: (JadwalDsn) -> Unit) {
+        presence_button.setOnClickListener { clickListener(item) }
     }
 }

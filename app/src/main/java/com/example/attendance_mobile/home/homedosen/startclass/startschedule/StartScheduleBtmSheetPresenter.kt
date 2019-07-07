@@ -10,7 +10,7 @@ class StartScheduleBtmSheetPresenter(var dsnSchedule: JadwalDsn, val view : Star
     lateinit var roomList : List<String>
 
     fun doFetchRoomList(){
-        remoteRepository.doFetchStartClassRoomList(TimeUtils.getDateInString(TimeUtils.getCurrentDate(),"dd-MM-yyyy"),dsnSchedule.jamMulai,dsnSchedule.kelas,dsnSchedule.namaMatkul, dsnSchedule.jenisMatkul.toString(),this)
+        remoteRepository.doFetchStartClassRoomList(TimeUtils.getDateInString(TimeUtils.getCurrentDate(),"dd-MM-yyyy"),TimeUtils.getDateInString(TimeUtils.getCurrentDate(),"dd-MM-yyyy"),dsnSchedule.jamMulai,dsnSchedule.kelas,dsnSchedule.namaMatkul, dsnSchedule.jenisMatkul.toString(),this)
     }
 
     override fun onRoomListResult(data: RoomAvailableResponse) {

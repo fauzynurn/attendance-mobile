@@ -45,19 +45,17 @@ dependencies {
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.1.0-alpha04'
     implementation 'com.github.vipulasri:timelineview:1.1.0'
-    testImplementation "org.powermock:powermock-module-junit4:1.6.6"
-    testImplementation "org.powermock:powermock-module-junit4-rule:1.6.6"
-    testImplementation "org.powermock:powermock-api-mockito:1.6.6"
-    testImplementation "org.powermock:powermock-classloading-xstream:1.6.6"
     implementation 'androidx.constraintlayout:constraintlayout:1.1.2'
     testImplementation 'org.robolectric:robolectric:4.3'
     androidTestImplementation 'org.mockito:mockito-android:2.28.2'
     androidTestImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0"
+    testImplementation 'org.mockito:mockito-inline:2.28.2'
     testImplementation "org.robolectric:robolectric:4.3"
     testImplementation 'junit:junit:4.12'
     implementation 'com.eyro.cubeacon:cubeacon:2.0.0@aar'
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
     implementation 'com.github.rahatarmanahmed:circularprogressview:2.5.0'
+    testImplementation 'org.mockito:mockito-core:2.28.2'
     androidTestImplementation "androidx.arch.core:core-testing:2.0.0"
     androidTestImplementation 'androidx.test:core:1.2.0'
     implementation 'com.google.code.gson:gson:2.8.2'

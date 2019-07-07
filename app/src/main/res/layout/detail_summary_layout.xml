@@ -9,7 +9,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content">
-        <ImageView android:id="@+id/detail_kehadiran_back_btn" android:layout_width="wrap_content"
+        <ImageView android:id="@+id/detail_summary_back_btn" android:layout_width="wrap_content"
                    android:layout_height="wrap_content" android:src="@drawable/ic_keyboard_arrow_left_black_48dp"/>
         <TextView android:layout_gravity="center" android:layout_width="wrap_content"
                   android:layout_height="wrap_content" android:fontFamily="@font/productsansbold"

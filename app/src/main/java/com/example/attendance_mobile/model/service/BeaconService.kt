@@ -46,6 +46,12 @@ class BeaconService : CBServiceListener, CBRangingListener, Service() {
         macAddress = intent.getStringExtra("macAddress")
         Log.i("xx", "START_RANGING_CALLED")
         WakeLocker.acquire(this)
+        Handler().postDelayed({
+            val intent = Intent()
+            intent.putExtra("macAddress", macAddress)
+            intent.action = "ON_BEACON_FOUND"
+            sendBroadcast(intent)
+        },5000)
         Cubeacon.initialize(this)
         cubeacon = Cubeacon.getInstance()
         cubeacon.connect(this)

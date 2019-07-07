@@ -1,5 +1,6 @@
 package com.example.attendance_mobile.home.homedosen.startclass.beaconscan
 
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
@@ -19,6 +20,7 @@ import kotlinx.android.synthetic.main.beacon_btm_sheet_layout.view.*
 class BeaconBtmSheet : BaseBottomSheet(),BaseView<BeaconBtmSheetPresenter>,BeaconBtmSheetContract.ViewContract{
     override lateinit var presenter: BeaconBtmSheetPresenter
     lateinit var v: View
+    lateinit var mActivity : HomeDsnActivity
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         v = inflater.inflate(R.layout.beacon_btm_sheet_layout, container, false)
         val obj = arguments?.getSerializable("dsnSchedule") as JadwalDsn
@@ -47,8 +49,11 @@ class BeaconBtmSheet : BaseBottomSheet(),BaseView<BeaconBtmSheetPresenter>,Beaco
     }
 
     override fun reloadList() {
-        val activity = activity as HomeDsnActivity
-        activity.reloadList()
+        mActivity.reloadList()
+    }
+
+    override fun showSnackBarOnParent(message : String){
+        mActivity.showSnackBar(message)
     }
 
     override fun registerReceiver(receiver: BeaconService.BeaconReceiver<BeaconBtmSheetContract.BeaconContract>) {
@@ -56,5 +61,10 @@ class BeaconBtmSheet : BaseBottomSheet(),BaseView<BeaconBtmSheetPresenter>,Beaco
         intentFilter.addAction(Constants.ON_TIMEOUT)
         intentFilter.addAction(Constants.ON_BEACON_FOUND)
         context?.registerReceiver(receiver, intentFilter)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        mActivity = context as HomeDsnActivity
     }
 }

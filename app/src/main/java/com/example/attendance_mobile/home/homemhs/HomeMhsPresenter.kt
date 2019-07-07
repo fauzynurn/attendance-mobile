@@ -16,12 +16,13 @@ class HomeMhsPresenter(
     private val remoteRepository: RemoteRepository,
     private val sharedPreferenceHelper: SharedPreferenceHelper
 ) : HomeMhsContract.InteractorContract {
-    private var regulerList: List<JadwalMhs> = emptyList()
-    private var altList: List<JadwalMhs> = emptyList()
+    private var scheduleList: MutableList<JadwalMhs> = mutableListOf()
+//    private var altList: List<JadwalMhs> = emptyList()
 
-    fun setupHomescreen(){
-        val name = sharedPreferenceHelper.getSharedPreferenceString("nama","")
+    fun setupHomescreen() {
+        val name = sharedPreferenceHelper.getSharedPreferenceString("nama", "")
         view.setName(name!!)
+//        view.setName("Fauzi Nur Noviansyah")
     }
 
     fun doFetchSummaryData() {
@@ -50,19 +51,11 @@ class HomeMhsPresenter(
 //                arrayListOf(Kehadiran(1, "07:00:00", "07:50:00"), Kehadiran(2, "07:50:00", "08:40:00"))
 //            )
 //        )
-        remoteRepository.doFetchSummary(nim!!, this)
+        remoteRepository.doFetchSummary(nim!!, TimeUtils.getDateInString(TimeUtils.getCurrentDate(),"dd-MM-yyyy"),TimeUtils.getDateInString(TimeUtils.getCurrentDate(),"HH:mm") + ":00",this)
     }
 
-    fun onBindScheduleItem(position: Int, viewHolder: ScheduleMhsViewHolder, type: Int) {
-        val schedule: JadwalMhs = if (type == 1) {
-            regulerList[position]
-        } else {
-            altList[position]
-        }
-        var currentTime: Date = Calendar.getInstance().time
-        val startTime: Date = TimeUtils.convertStringToDate(schedule.jamMulai)!!
-        val startTimeByDosen: Date? = TimeUtils.convertStringToDate(schedule.jamMulaiOlehDosen)
-        val endTime: Date = TimeUtils.convertStringToDate(schedule.jamSelesai)!!
+    fun onBindScheduleItem(position: Int, viewHolder: ScheduleMhsViewHolder) {
+        val schedule: JadwalMhs = scheduleList[position]
 
         viewHolder.apply {
             setStartTime(schedule.jamMulai.substring(0, schedule.jamMulai.length - 3))
@@ -71,67 +64,10 @@ class HomeMhsPresenter(
         }
 
         if (schedule.jenisMatkul) viewHolder.setJenisMatkul(Constants.TEORI) else viewHolder.setJenisMatkul(Constants.PRAKTEK)
-
-        when {
-            currentTime >= startTime && currentTime < endTime -> {
-                viewHolder.apply {
-                    if(schedule.jamMulaiOlehDosen == "") setStatusMatkul("Belum dimulai") else setStatusMatkul("Sudah dimulai")
-                    setPresenceButtonClickListener(schedule) {
-                        currentTime = Calendar.getInstance().time
-                        if (schedule.jamMulaiOlehDosen != "") {
-                            if (currentTime < TimeUtils.addMinutesToDate(Constants.LATE_LIMIT, startTimeByDosen!!)
-                            ) {
-                                if (!schedule.listSesi.any { sesi -> sesi.status }) {
-                                    if (view.checkAllRequirement()) {
-                                        //localRepository.insert(LocalAttendance("TEST1", 1, "KLKL", "XXXLL", "OPOP", "APAPA", 0, "MAC"))
-                                        localRepository.saveBulkSchedule(schedule)
-                                        view.startBeaconActivity(schedule.ruangan)
-                                    }
-                                } else {
-                                    view.startDetailPerSessionActivity(schedule)
-                                }
-//                            if (!permissionManager.isAutoTimeActive()) {
-//                                view.showDialog("Pencatatan Presensi Gagal", Constants.AUTO_TIME_DISABLED_MESSAGE)
-//                            } else {
-                                // }
-                            } else {
-                                view.showDialog(
-                                    "Waktu pencatatan kehadiran sudah habis",
-                                    "Silahkan menunggu sesi berikutnya"
-                                )
-                            }
-                        } else {
-                            view.showDialog(
-                                "Kelas belum dimulai oleh dosen",
-                                "Silahkan hubungi dosen yang bersangkutan untuk memulai kelas."
-                            )
-                        }
-                    }
-                }
-            }
-            currentTime > endTime -> {
-                viewHolder.apply {
-                    setStatusMatkul("Sudah selesai")
-                    setStatusMatkulColor("#ef463e")
-                    hidePresenceButton()
-                }
-            }
-            currentTime < startTime -> {
-                viewHolder.apply {
-                    setStatusMatkul("Belum dimulai")
-                    setStatusMatkulColor("#bcbcbc")
-                    hidePresenceButton()
-                }
-            }
-        }
     }
 
-    fun regulerSize(): Int {
-        return regulerList.size
-    }
-
-    fun altSize(): Int {
-        return altList.size
+    fun scheduleSize(): Int {
+        return scheduleList.size
     }
 
     //    private fun onScheduleClick(scheduleItem : JadwalMhs){
@@ -142,29 +78,96 @@ class HomeMhsPresenter(
 //        }
 //    }
     fun doFetchScheduleList() {
-        val kelas = sharedPreferenceHelper.getSharedPreferenceString("kelas", "")
         val nim = sharedPreferenceHelper.getSharedPreferenceString("nim", "")
-        remoteRepository.doFetchMhsScheduleList(nim!!, kelas!!, "27-06-2019", this)
+        remoteRepository.doFetchMhsScheduleList(nim!!, TimeUtils.getDateInString(TimeUtils.getCurrentDate(), "dd-MM-yyyy"), this)
+    }
+
+    fun bindOngoingSchedule(schedule: JadwalMhs) {
+        val startTimeByDosen: Date? = TimeUtils.convertStringToDate(schedule.jamMulaiOlehDosen)
+        view.apply {
+            setOngoingMatkulName(schedule.namaMatkul)
+            if (schedule.jenisMatkul) setOngoingJenisMatkul("Teori") else setOngoingJenisMatkul("Praktek")
+            setOngoingTime(
+                "${schedule.jamMulai.substring(
+                    0,
+                    schedule.jamMulai.length - 3
+                )} - ${schedule.jamSelesai.substring(0, schedule.jamMulai.length - 3)}"
+            )
+        }
+        if (schedule.jamMulaiOlehDosen != "") {
+            val currentTime = Calendar.getInstance().time
+
+//                            if (!permissionManager.isAutoTimeActive()) {
+//                                view.showDialog("Pencatatan Presensi Gagal", Constants.AUTO_TIME_DISABLED_MESSAGE)
+//                            } else {
+            // }
+            if (!schedule.listSesi.any { sesi -> sesi.status }) {
+                if (currentTime < TimeUtils.addMinutesToDate(Constants.LATE_LIMIT, startTimeByDosen!!)) {
+                    view.setPresenceButtonClickListener(schedule) {
+                        if (view.checkAllRequirement()) {
+                            //localRepository.insert(LocalAttendance("TEST1", 1, "KLKL", "XXXLL", "OPOP", "APAPA", 0, "MAC"))
+                            localRepository.saveBulkSchedule(schedule)
+                            view.startBeaconActivity(schedule.ruangan)
+                        }
+                    }
+                } else {
+                    view.setPresenceButtonClickListener(schedule) {
+                        view.showDialog(
+                            "Waktu pencatatan kehadiran sudah habis",
+                            "Silahkan menunggu sesi berikutnya"
+                        )
+                    }
+                }
+            } else {
+                view.setBtnLabel("Lihat kehadiran")
+                view.setPresenceButtonClickListener(schedule) {
+                    view.startDetailPerSessionActivity(schedule)
+                }
+            }
+        } else {
+            view.setPresenceButtonClickListener(schedule) {
+                view.showDialog(
+                    "Kelas belum dimulai oleh dosen",
+                    "Silahkan hubungi dosen yang bersangkutan untuk memulai kelas."
+                )
+            }
+        }
     }
 
     override fun onScheduleListResult(data: ScheduleResponse<JadwalMhs>) {
-        if (data.jadwalReguler.size == 0) {
-            view.handleNoRegulerScheduleFound()
-        } else {
-            regulerList = data.jadwalReguler
-            view.apply {
-                refreshRegulerList()
-                onRegulerScheduleListLoaded()
-            }
-        }
+        val currentTime: Date = Calendar.getInstance().time
+        scheduleList.addAll(data.jadwalReguler)
+        scheduleList.addAll(data.jadwalPengganti)
 
-        if (data.jadwalPengganti.size == 0) {
-            view.handleNoAltScheduleFound()
+        if (scheduleList.isEmpty()) {
+            view.handleNoMhsScheduleFound()
+            view.handleNoOngoingMhsScheduleFound()
         } else {
-            altList = data.jadwalPengganti
             view.apply {
-                refreshAltList()
-                onAltScheduleListLoaded()
+                refreshScheduleList()
+                onMhsScheduleListLoaded()
+            }
+            val schedule: JadwalMhs? = scheduleList.find {
+                currentTime >= TimeUtils.convertStringToDate(it.jamMulai)!! && currentTime < TimeUtils.convertStringToDate(
+                    it.jamSelesai
+                )
+            }
+            if (schedule == null) {
+                view.handleNoOngoingMhsScheduleFound()
+            } else {
+                //remove ongoing schedule from list
+                scheduleList = scheduleList.filter {
+                    !(currentTime >= TimeUtils.convertStringToDate(it.jamMulai)!! && currentTime < TimeUtils.convertStringToDate(
+                        it.jamSelesai
+                    ))
+                } as MutableList<JadwalMhs>
+                bindOngoingSchedule(schedule)
+                if(scheduleList.isEmpty()){
+                    view.handleNoMhsScheduleFound()
+                }
+                view.apply {
+                    onOngoingMhsScheduleLoaded()
+                }
             }
         }
     }

@@ -64,6 +64,9 @@ class DetailPerSessionActivity : AppCompatActivity(), DetailPerSessionContract.V
         session_list.adapter = adapter
         val schedule = intent.getSerializableExtra("schedule") as JadwalMhs
         presenter.onActivityStart(schedule)
+        detail_kehadiran_back_btn.setOnClickListener {
+            onBackPressed()
+        }
     }
 
     override fun onAttendanceSessionListLoaded() {

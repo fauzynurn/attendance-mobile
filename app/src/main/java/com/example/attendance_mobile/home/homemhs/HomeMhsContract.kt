@@ -10,16 +10,21 @@ interface HomeMhsContract {
         fun startBeaconActivity(ruangan: Ruangan)
         fun startDetailPerSessionActivity(schedule: JadwalMhs)
         fun onSummaryDataLoaded(data : HashMap<String,String>)
-        fun onRegulerScheduleListLoaded()
-        fun onAltScheduleListLoaded()
+        fun onMhsScheduleListLoaded()
+        fun onOngoingMhsScheduleLoaded()
         fun setName(name : String)
         fun showSnackBar(message: String)
         fun showDialog(title: String, message: String)
-        fun refreshRegulerList()
-        fun refreshAltList()
+        fun refreshScheduleList()
         fun checkAllRequirement() : Boolean
-        fun handleNoRegulerScheduleFound()
-        fun handleNoAltScheduleFound()
+        fun handleNoMhsScheduleFound()
+        fun handleNoOngoingMhsScheduleFound()
+
+        fun setOngoingMatkulName(name : String)
+        fun setOngoingJenisMatkul(jenisMatkul : String)
+        fun setOngoingTime(startTime : String)
+        fun setBtnLabel(label : String)
+        fun setPresenceButtonClickListener(item : JadwalMhs, clickListener: (JadwalMhs) -> Unit)
     }
 
     interface InteractorContract{
@@ -29,14 +34,9 @@ interface HomeMhsContract {
     }
 
     interface ItemViewContract{
-        fun highlightItem()
         fun setStartTime(startTime : String)
         fun setEndTime(endTime : String)
         fun setNamaMatkul(namaMatkul : String)
         fun setJenisMatkul(jenisMatkul : String)
-        fun setStatusMatkul(statusMatkul : String)
-        fun setStatusMatkulColor(colorCode : String)
-        fun setPresenceButtonClickListener(item : JadwalMhs, clickListener: (JadwalMhs) -> Unit)
-        fun hidePresenceButton()
     }
 }

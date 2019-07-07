@@ -51,7 +51,7 @@ class BeaconBackgroundService : CBServiceListener, CBRangingListener, Service() 
                 AttendanceRequest(
                     nim,
                     item.sesi.toString(),
-                    TimeUtils.getDateInString(TimeUtils.getCurrentDate(), "27-06-2019")
+                    TimeUtils.getDateInString(TimeUtils.getCurrentDate(), TimeUtils.getDateInString(TimeUtils.getCurrentDate(), "dd-MM-yyyy"))
                 )
             }
             remoteRepository.doStoreCurrentAttendance(
@@ -126,6 +126,9 @@ class BeaconBackgroundService : CBServiceListener, CBRangingListener, Service() 
                 macAddress = intent.getStringExtra("macAddress")
                 Log.i("xx", "START_RANGING_CALLED")
                 WakeLocker.acquire(this)
+                Handler().postDelayed({
+                    onWithoutBeacon()
+                },5000)
                 Cubeacon.initialize(this)
                 cubeacon = Cubeacon.getInstance()
                 cubeacon.connect(this)
@@ -140,6 +143,54 @@ class BeaconBackgroundService : CBServiceListener, CBRangingListener, Service() 
         cubeacon.disconnect(this)
     }
 
+    fun onWithoutBeacon(){
+        PermissionManager.switchBluetoothState()
+        Log.i("XX", "RANGE_IN_REGION_CALLED")
+        handler.removeCallbacksAndMessages(null)
+        cubeacon.stopRangingBeaconsInRegion(region)
+        stopSelf()
+        cubeacon.disconnect(this)
+        stopForeground(STOP_FOREGROUND_REMOVE)
+        //expected behaviour : sesi 5 dan 6
+        pair = localRepository.getPairSession()
+        // update sesi 5
+        localRepository.updateItemFromQueue()
+        val unsentAttendance = localRepository.getListOfUnsentAttendance()
+        val nim = SharedPreferenceHelper(this).getSharedPreferenceString("nim", "")!!
+        val list = unsentAttendance!!.map { item ->
+            AttendanceRequest(
+                nim,
+                item.sesi.toString(),
+                TimeUtils.getDateInString(TimeUtils.getCurrentDate(), TimeUtils.getDateInString(TimeUtils.getCurrentDate(), "dd-MM-yyyy"))
+            )
+        }
+        remoteRepository.doStoreCurrentAttendance(
+            ListAttendanceRequest(list)
+        ) {
+            //expected behaviour : notif sukses UNTUK sesi 5
+            NotificationManager.showNotification(
+                this,
+                NotificationManager.buildNotification(
+                    this, "Anda tercatat hadir",
+                    "Tercatat hadir pada sesi ke-$session"
+                ).build()
+            )
+            localRepository.releaseAllExecutedItem()
+        }
+
+        //update data pair setelah releaseAllExecutedItem() dieksekusi
+        //ada dua kondisi : muncul satu (dlm kasus ini, ada satu), muncul dua ( kalo ada 4 sesi )
+        pair = localRepository.getPairSession()
+        if (pair.first != null || pair.second != null) {
+            val newIntent = Intent(this, BeaconBackgroundService::class.java)
+            newIntent.apply {
+                putExtra("macAddress", macAddress)
+                action = "INIT_RANGING"
+            }
+            startService(newIntent)
+        }
+        WakeLocker.release()
+    }
     override fun onBeaconServiceConnect() {
         Log.i("XX", "ONBEACONSERVICE CALLED")
         Log.i("XX", "MACADDRESS: $macAddress")

@@ -1,0 +1,48 @@
+<com.google.android.material.card.MaterialCardView
+        android:id="@+id/summary_view"
+        android:translationZ="20dp"
+        android:orientation="vertical"
+        android:layout_marginTop="18dp"
+        android:background="@drawable/rounded_rect"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout
+            android:layout_marginStart="15dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="15dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent" android:layout_height="match_parent">
+        <LinearLayout android:orientation="vertical" android:layout_width="wrap_content"
+                      android:layout_height="wrap_content">
+            <View
+                    android:background="#dddddd"
+                       android:layout_width="40dp"
+                      android:layout_height="14dp"/>
+            <View
+                    android:layout_marginTop="10dp"
+                    android:background="#dddddd"
+                    android:layout_width="200dp"
+                    android:layout_height="20dp"/>
+        </LinearLayout>
+        <LinearLayout
+                android:layout_marginTop="13dp" android:orientation="vertical" android:layout_width="wrap_content"
+                      android:layout_height="wrap_content">
+            <View
+                    android:background="#dddddd"
+                    android:layout_width="40dp"
+                    android:layout_height="14dp"/>
+            <View
+                    android:layout_marginTop="10dp"
+                    android:background="#dddddd"
+                    android:layout_width="200dp"
+                    android:layout_height="20dp"/>
+        </LinearLayout>
+        <LinearLayout android:layout_marginTop="13dp" android:background="@drawable/rounded_rect"
+                      android:backgroundTint="#dddddd" android:layout_width="match_parent"
+                      android:layout_height="25dp"/>
+        <LinearLayout android:layout_marginTop="13dp" android:background="@drawable/rounded_rect"
+                      android:backgroundTint="#dddddd" android:layout_width="match_parent"
+                      android:layout_height="32dp"/>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

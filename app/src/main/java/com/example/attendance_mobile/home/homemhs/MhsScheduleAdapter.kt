@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.attendance_mobile.R
 import com.example.attendance_mobile.home.homemhs.viewholder.ScheduleMhsViewHolder
 
-class RegulerMhsScheduleAdapter(private val presenter: HomeMhsPresenter) : RecyclerView.Adapter<ScheduleMhsViewHolder>() {
+class MhsScheduleAdapter(private val presenter: HomeMhsPresenter) : RecyclerView.Adapter<ScheduleMhsViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ScheduleMhsViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.schedule_mhs_item, parent, false)
@@ -14,10 +14,10 @@ class RegulerMhsScheduleAdapter(private val presenter: HomeMhsPresenter) : Recyc
     }
 
     override fun getItemCount(): Int {
-        return presenter.regulerSize()
+        return presenter.scheduleSize()
     }
 
     override fun onBindViewHolder(holder: ScheduleMhsViewHolder, position: Int) {
-        presenter.onBindScheduleItem(position,holder,1)
+        presenter.onBindScheduleItem(position,holder)
     }
 }

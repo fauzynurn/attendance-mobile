@@ -10,6 +10,7 @@ interface BeaconBtmSheetContract {
         fun closeBtmSheet()
         fun reloadList()
         fun registerReceiver(receiver : BeaconService.BeaconReceiver<BeaconContract>)
+        fun showSnackBarOnParent(message : String)
     }
 
     interface BeaconContract : BaseBeaconInteractor

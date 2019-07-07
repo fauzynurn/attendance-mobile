@@ -6,18 +6,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.attendance_mobile.R
 import com.example.attendance_mobile.home.homedosen.viewholder.ScheduleDsnViewHolder
 
-class RegulerDsnScheduleAdapter(private val presenter: HomeDsnPresenter) : RecyclerView.Adapter<ScheduleDsnViewHolder>() {
+class DsnScheduleAdapter(private val presenter: HomeDsnPresenter) : RecyclerView.Adapter<ScheduleDsnViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ScheduleDsnViewHolder {
-        val v = LayoutInflater.from(parent.context).inflate(R.layout.schedule_mhs_item, parent, false)
+        val v = LayoutInflater.from(parent.context).inflate(R.layout.schedule_dsn_item, parent, false)
         return ScheduleDsnViewHolder(v)
     }
 
     override fun getItemCount(): Int {
-        return presenter.regulerSize()
+        return presenter.scheduleSize()
     }
 
     override fun onBindViewHolder(holder: ScheduleDsnViewHolder, position: Int) {
-        presenter.onBindScheduleItem(position,holder,1)
+        presenter.onBindScheduleItem(position,holder)
     }
 }

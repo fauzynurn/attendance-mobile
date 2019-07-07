@@ -1,124 +1,197 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/homedsn_parent"
-        android:orientation="vertical"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    <RelativeLayout
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/homedsn_parent"
+                android:orientation="vertical">
+    <LinearLayout
+            android:id="@+id/top_content"
+            android:orientation="vertical"
+            android:clipToPadding="false"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp">
-        <ImageView
-                android:id="@+id/jwl_pengganti_btn"
-                android:layout_alignParentEnd="true" android:layout_width="30dp" android:layout_height="30dp"
-                android:src="@drawable/ic_calendar"
-                android:layout_centerVertical="true"/>
-        <LinearLayout android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content">
-            <TextView android:layout_width="wrap_content" android:textColor="@color/black" android:fontFamily="@font/productsansbold" android:textSize="23sp" android:layout_height="wrap_content" android:text="Halo,"/>
-            <TextView android:id="@+id/nama" android:textSize="23sp" android:textColor="@color/black" android:fontFamily="@font/productsansmedium" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Ghifari Munawar"/>
-        </LinearLayout>
-    </RelativeLayout>
-    <ScrollView android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-        <LinearLayout android:orientation="vertical"
-                      android:layout_width="wrap_content"
+            android:backgroundTint="#1659ce"
+            android:background="@drawable/home_rect_bg"
+            android:layout_height="wrap_content">
+        <RelativeLayout
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp">
+            <LinearLayout android:orientation="vertical" android:layout_width="wrap_content"
+                          android:layout_height="wrap_content">
+                <TextView android:layout_width="wrap_content" android:textColor="@color/white"
+                          android:fontFamily="@font/productsansbold" android:textSize="23sp"
+                          android:layout_height="wrap_content" android:text="Halo,"/>
+                <TextView android:id="@+id/nama" android:textSize="23sp" android:textColor="@color/white"
+                          android:fontFamily="@font/productsansmedium" android:layout_width="wrap_content"
+                          android:layout_height="wrap_content" android:text="M. Ridwan Herlambang D.P"/>
+            </LinearLayout>
+            <ImageView android:id="@+id/jwl_pengganti_btn" android:layout_width="38dp"
+                       android:layout_height="38dp" android:layout_alignParentEnd="true"
+                       android:src="@drawable/ic_calendar_with_a_clock_time_tools_white"/>
+        </RelativeLayout>
+        <RelativeLayout android:layout_marginStart="24dp"
+                        android:layout_marginEnd="24dp"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content">
+            <com.facebook.shimmer.ShimmerFrameLayout
+                    android:id="@+id/ongoing_dsn_schedule_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+            >
+                <LinearLayout
+                        android:id="@+id/ongoing_dsn_schedule_ph_container"
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                    <include layout="@layout/ongoing_sch_dsn_item_layout"/>
+                </LinearLayout>
+            </com.facebook.shimmer.ShimmerFrameLayout>
+            <LinearLayout
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/ongoing_dsn_schedule"
+                    android:layout_marginBottom="20dp"
+                    android:visibility="gone"
+                    android:orientation="vertical"
+                    android:layout_marginTop="18dp"
+                    android:backgroundTint="@color/white"
+                    android:background="@drawable/rounded_rect" android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                <RelativeLayout android:id="@+id/summary_title_ph" android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+                    <TextView
+                            android:id="@+id/summary_title"
+                            android:textSize="20sp"
+                            android:layout_marginStart="15dp"
+                            android:textColor="#707070"
+                            android:fontFamily="@font/productsansbold" android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:text="Jadwal mengajar saat ini"/>
+                    <View android:layout_marginTop="16dp" android:layout_below="@id/summary_title"
+                          android:layout_width="match_parent" android:background="#dbdbdb" android:layout_height="1dp"/>
+                </RelativeLayout>
+                <LinearLayout
+                        android:layout_marginStart="15dp"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="15dp"
+                        android:orientation="vertical"
+                        android:layout_width="match_parent" android:layout_height="match_parent">
+                    <LinearLayout android:orientation="vertical" android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content">
+                        <TextView android:fontFamily="@font/productsansmedium" android:textSize="12dp"
+                                  android:textColor="@color/darkerGrey" android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content" android:text="Nama Mata Kuliah"/>
+                        <TextView android:id="@+id/mata_kuliah" android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content" android:fontFamily="@font/productsansbold"
+                                  android:textSize="19sp" android:textColor="@color/black"
+                                  android:text="Pengolahan Citra Digital"/>
+                    </LinearLayout>
+                    <LinearLayout android:layout_marginTop="13dp" android:orientation="horizontal"
+                                  android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content">
+                        <LinearLayout android:orientation="vertical" android:layout_width="wrap_content"
+                                      android:layout_height="wrap_content">
+                            <TextView android:fontFamily="@font/productsansmedium" android:textSize="12dp"
+                                      android:textColor="@color/darkerGrey" android:layout_width="wrap_content"
+                                      android:layout_height="wrap_content" android:text="Jenis Mata Kuliah"/>
+                            <TextView android:id="@+id/jenis_matkul" android:layout_width="wrap_content"
+                                      android:layout_height="wrap_content" android:fontFamily="@font/productsansbold"
+                                      android:textSize="19sp" android:textColor="@color/black"
+                                      android:text="Teori"/>
+                        </LinearLayout>
+                        <LinearLayout android:layout_marginStart="50dp" android:orientation="vertical"
+                                      android:layout_width="wrap_content"
+                                      android:layout_height="wrap_content">
+                            <TextView android:fontFamily="@font/productsansmedium" android:textSize="12dp"
+                                      android:textColor="@color/darkerGrey" android:layout_width="wrap_content"
+                                      android:layout_height="wrap_content" android:text="Kelas"/>
+                            <TextView android:id="@+id/kelas" android:layout_width="wrap_content"
+                                      android:layout_height="wrap_content" android:fontFamily="@font/productsansbold"
+                                      android:textSize="19sp" android:textColor="@color/black"
+                                      android:text="1B"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                    <LinearLayout android:layout_marginTop="13dp" android:background="@drawable/rounded_rect"
+                                  android:backgroundTint="#114299" android:layout_width="match_parent"
+                                  android:layout_height="match_parent">
+                        <LinearLayout android:layout_marginStart="8dp" android:layout_width="wrap_content"
+                                      android:layout_height="wrap_content">
+                            <ImageView android:layout_width="24dp" android:layout_height="24dp"
+                                       android:src="@drawable/ic_calendar_with_a_clock_time_tools"/>
+                            <TextView android:id="@+id/jam" android:layout_marginStart="20dp"
+                                      android:layout_width="wrap_content"
+                                      android:fontFamily="@font/productsansbold" android:textColor="@color/white"
+                                      android:layout_height="wrap_content" android:textSize="19sp"
+                                      android:text="07:00 - 08:40"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                    <com.google.android.material.button.MaterialButton
+                            app:cornerRadius="4dp"
+                            android:layout_marginTop="10dp"
+                            style="@style/Widget.MaterialComponents.Button.TextButton"
+                            android:textColor="@color/white"
+                            app:backgroundTint="#1659ce"
+                            android:fontFamily="@font/productsansbold"
+                            android:id="@+id/presence_button"
+                            android:textAllCaps="false"
+                            android:layout_width="match_parent"
+                            android:layout_height="45dp"
+                            android:text="Mulai kelas"/>
+                </LinearLayout>
+            </LinearLayout>
+            <TextView android:visibility="gone" android:id="@+id/no_ongoing_schedule_text"
+                      android:textSize="17sp"
+                      android:textColor="@color/white"
+                      android:layout_marginTop="25dp"
+                      android:layout_marginBottom="25dp"
+                      android:fontFamily="@font/productsansbold" android:layout_centerInParent="true"
+                      android:text="Tidak ada jadwal saat ini" android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"/>
+        </RelativeLayout>
+    </LinearLayout>
+    <LinearLayout android:layout_marginStart="24dp"
+                  android:layout_marginEnd="24dp"
+                  android:layout_below="@id/top_content" android:layout_marginTop="20dp" android:orientation="vertical" android:layout_width="wrap_content"
+                  android:layout_height="wrap_content">
+
+        <LinearLayout android:layout_marginTop="10dp" android:layout_width="wrap_content"
                       android:layout_height="wrap_content">
-            <LinearLayout android:layout_marginTop="10dp"
-                          android:layout_width="wrap_content"
-                          android:layout_height="wrap_content">
-                <TextView android:layout_marginEnd="13dp"
-                          android:textSize="19sp"
-                          android:textColor="@color/black"
-                          android:fontFamily="@font/productsansbold"
-                          android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:text="Jadwal Pengganti"/>
-                <View android:layout_gravity="center_vertical"
-                      android:background="@color/black"
-                      android:layout_width="match_parent"
-                      android:layout_height="1dp"/>
-            </LinearLayout>
-            <RelativeLayout android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
-                <com.facebook.shimmer.ShimmerFrameLayout
-                        android:id="@+id/dsn_alt_schedule_list_container"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                >
-                    <LinearLayout
-                            android:id="@+id/dsn_alt_schedule_list_ph_container"
-                            android:orientation="vertical"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-                        <include layout="@layout/schedule_list_placeholder"/>
-                        <include layout="@layout/schedule_list_placeholder"/>
-                    </LinearLayout>
-                </com.facebook.shimmer.ShimmerFrameLayout>
-                <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/dsn_alt_schedule_list"
-                        android:visibility="gone"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                />
-                <TextView android:visibility="gone" android:id="@+id/dsn_no_alt_schedule_text" android:textSize="17sp"
-                          android:fontFamily="@font/productsansbold" android:layout_centerInParent="true"
-                          android:text="Tidak ada jadwal hari ini" android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"/>
-            </RelativeLayout>
-            <LinearLayout android:layout_marginTop="10dp"
-                          android:layout_width="wrap_content"
-                          android:layout_height="wrap_content">
-                <TextView android:layout_marginEnd="13dp"
-                          android:textSize="19sp"
-                          android:textColor="@color/black"
-                          android:fontFamily="@font/productsansbold"
-                          android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:text="Jadwal Hari Ini"/>
-                <View android:layout_gravity="center_vertical"
-                      android:background="@color/black"
-                      android:layout_width="match_parent"
-                      android:layout_height="1dp"/>
-            </LinearLayout>
-            <RelativeLayout android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
-                <com.facebook.shimmer.ShimmerFrameLayout
-                        android:id="@+id/dsn_schedule_list_container"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                >
-                    <LinearLayout
-                            android:id="@+id/dsn_schedule_list_ph_container"
-                            android:orientation="vertical"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-                        <include layout="@layout/schedule_list_placeholder"/>
-                        <include layout="@layout/schedule_list_placeholder"/>
-                    </LinearLayout>
-                </com.facebook.shimmer.ShimmerFrameLayout>
-                <androidx.recyclerview.widget.RecyclerView
-                        android:nestedScrollingEnabled="false"
-                        android:id="@+id/dsn_reguler_schedule_list"
-                        android:visibility="gone"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                />
-                <TextView android:visibility="gone" android:id="@+id/dsn_no_reguler_schedule_text"
-                          android:textSize="17sp" android:fontFamily="@font/productsansbold"
-                          android:layout_centerInParent="true" android:text="Tidak ada jadwal hari ini"
-                          android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-            </RelativeLayout>
+            <TextView android:layout_marginEnd="13dp" android:textSize="19sp" android:textColor="@color/black"
+                      android:fontFamily="@font/productsansbold" android:layout_width="wrap_content"
+                      android:layout_height="wrap_content" android:text="Jadwal mengajar hari ini"/>
         </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+        <RelativeLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+            <com.facebook.shimmer.ShimmerFrameLayout
+                    android:id="@+id/schedule_list_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+            >
+                <LinearLayout
+                        android:id="@+id/schedule_list_ph_container"
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                    <include layout="@layout/schedule_list_placeholder"/>
+                </LinearLayout>
+            </com.facebook.shimmer.ShimmerFrameLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/schedule_list"
+                    android:visibility="gone"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+            />
+            <TextView android:visibility="gone" android:id="@+id/no_dsn_schedule_text"
+                      android:textSize="17sp"
+                      android:layout_marginTop="25dp"
+                      android:layout_marginBottom="25dp"
+                      android:fontFamily="@font/productsansbold" android:layout_centerInParent="true"
+                      android:text="Tidak ada jadwal hari ini" android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"/>
+        </RelativeLayout>
+    </LinearLayout>
+</RelativeLayout>

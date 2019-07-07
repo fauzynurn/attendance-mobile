@@ -1,5 +1,6 @@
 package com.example.attendance_mobile.data
 
+import com.example.attendance_mobile.data.response.TglJwlPengganti
 import java.io.Serializable
 
 data class JadwalDsn(
@@ -10,5 +11,6 @@ data class JadwalDsn(
     val kelas : String,
     override val jamMulaiOlehDosen: String,
     override var jamSelesai: String,
-    override var ruangan: Ruangan
+    override var ruangan: Ruangan,
+    val tglJwlPengganti : TglJwlPengganti?
 ) : Jadwal(),Serializable

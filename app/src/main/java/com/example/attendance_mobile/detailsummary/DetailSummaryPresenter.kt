@@ -4,6 +4,7 @@ import com.example.attendance_mobile.data.DetailAkumulasiKehadiran
 import com.example.attendance_mobile.model.local.SharedPreferenceHelper
 import com.example.attendance_mobile.model.remote.RemoteRepository
 import com.example.attendance_mobile.utils.Constants
+import com.example.attendance_mobile.utils.TimeUtils
 
 class DetailSummaryPresenter(val view : DetailSummaryContract.ViewContract,
                              val sharedPreferenceHelper: SharedPreferenceHelper,
@@ -13,7 +14,7 @@ class DetailSummaryPresenter(val view : DetailSummaryContract.ViewContract,
 
     fun doFetchDetailSummaryList(){
         val nim = sharedPreferenceHelper.getSharedPreferenceString("nim", "")
-        remoteRepository.doFetchDetailSummary(nim!!,this)
+        remoteRepository.doFetchDetailSummary(nim!!, TimeUtils.getDateInString(TimeUtils.getCurrentDate(),"dd-MM-yyyy"),TimeUtils.getDateInString(TimeUtils.getCurrentDate(),"HH:mm") + ":00",this)
     }
 
     override fun onFail(error: String?) {

@@ -4,12 +4,13 @@ import com.example.attendance_mobile.data.Kehadiran
 import com.example.attendance_mobile.data.response.MhsListResponse
 import com.example.attendance_mobile.home.homedosen.viewholder.MhsListViewHolder
 import com.example.attendance_mobile.model.remote.RemoteRepository
+import com.example.attendance_mobile.utils.TimeUtils
 
-class MhsListPresenter(val view : MhsListContract.ViewContract, val remoteRepository: RemoteRepository) : MhsListContract.InteractorContract {
+class MhsListPresenter(val view : MhsListContract.ViewContract, val remoteRepository: RemoteRepository, val kelas : String) : MhsListContract.InteractorContract {
     private var mhsList: List<Kehadiran> = emptyList()
 
     fun doFetchMhsList(){
-        remoteRepository.doFetchMhsList("27-06-2019","16:00:00","09:30:00","3B","false","16TKO6043",this)
+        remoteRepository.doFetchMhsList(TimeUtils.getDateInString(TimeUtils.getCurrentDate(),"dd-MM-yyyy"),TimeUtils.getDateInString(TimeUtils.getCurrentDate(),"HH:mm") +":00",kelas,this)
     }
 
     fun size() : Int{

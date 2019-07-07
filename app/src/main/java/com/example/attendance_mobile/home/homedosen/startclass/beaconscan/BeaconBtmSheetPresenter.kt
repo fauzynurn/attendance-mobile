@@ -4,6 +4,7 @@ import com.example.attendance_mobile.data.JadwalDsn
 import com.example.attendance_mobile.model.manager.PermissionManager
 import com.example.attendance_mobile.model.remote.RemoteRepository
 import com.example.attendance_mobile.model.service.BeaconService
+import com.example.attendance_mobile.utils.TimeUtils
 
 class BeaconBtmSheetPresenter(val view : BeaconBtmSheetContract.ViewContract,
                               val remoteRepository: RemoteRepository,
@@ -24,9 +25,18 @@ class BeaconBtmSheetPresenter(val view : BeaconBtmSheetContract.ViewContract,
         view.closeBtmSheet()
         PermissionManager.switchBluetoothState()
         view.stopService()
-        view.reloadList()
 
-        remoteRepository.startClass("27-06-2019","09:32:00",jadwalDsn.ruangan.kodeRuangan,jadwalDsn.kelas,jadwalDsn.jenisMatkul,jadwalDsn.kodeMatkul)
+        remoteRepository.startClass(TimeUtils.getDateInString(TimeUtils.getCurrentDate(), "dd-MM-yyyy"),
+            TimeUtils.getDateInString(TimeUtils.getCurrentDate(), "HH:mm") + ":00",
+            jadwalDsn.kodeMatkul
+            ,jadwalDsn.kelas,
+            jadwalDsn.jenisMatkul,
+            jadwalDsn.ruangan.kodeRuangan,
+            {
+                if(it.status == "200") view.reloadList() else view.showSnackBarOnParent(it.status + " : Failed for some reason.")
+            },{
+                view.showSnackBarOnParent(it)
+            })
     }
 
     override fun onTimeout() {
